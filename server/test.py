@@ -7,7 +7,7 @@ index = 1
 
 @app.route('/api/data')
 def get_data():
-    return jsonify({'data': 'Someone ban malzhar!'})
+    return jsonify({'data': 'remove garen'})
 
 @app.route('/process_data', methods=['POST'])
 def process_data():
