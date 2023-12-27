@@ -1,5 +1,6 @@
-  import './App.css';
-  import React, { useEffect, useState } from 'react';
+import './App.css';
+import React, { useEffect, useState } from 'react';
+import Board from './components/Board';
 
   console.log("hello");
   let messages = [];
@@ -60,24 +61,29 @@
     }
 
     return (
-      <div className="flex justify-between items-start h-screen">
-        <div>
-          <p>Data from Python: {data}</p>
-          <p>input received in Python: {status}</p>
-          <p>Pick your champion. Your choice : {champ}</p>
-          <div className='py-4 px-4'>
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4" onClick={() => processMessage("Malzhar")}>Malzhar</button>
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mx-4" onClick={() => processMessage("Garen")}>Garen</button>
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4" onClick={() => processMessage("Sylas")}>Sylas</button>
+      <div>
+        <div className="flex justify-between items-start h-[350px]">
+          <div>
+            <p>Data from Python: {data}</p>
+            <p>input received in Python: {status}</p>
+            <p>Pick your champion. Your choice : {champ}</p>
+            <div className='py-4 px-4'>
+              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4" onClick={() => processMessage("Malzhar")}>Malzhar</button>
+              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mx-4" onClick={() => processMessage("Garen")}>Garen</button>
+              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4" onClick={() => processMessage("Sylas")}>Sylas</button>
+            </div>
+          </div>
+          <div className='mx-16 max-h-[300px] overflow-y-auto w-[300px]'>
+            <p>Message from ChatGPT: </p>
+            <ul>
+              {messages.map((message, index) => (
+                <li key={index}>{message}</li>
+              ))}
+            </ul>
           </div>
         </div>
-        <div className='mx-16 max-h-[300px] overflow-y-auto w-[300px]'>
-          <p>Message from ChatGPT: </p>
-          <ul>
-            {messages.map((message, index) => (
-              <li key={index}>{message}</li>
-            ))}
-          </ul>
+        <div className="flex justify-center items-center">
+          <Board/>
         </div>
       </div>
     );
