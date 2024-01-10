@@ -16,9 +16,15 @@ function Board() {
     const alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
     const cols = [0, 1, 2, 3, 4, 5, 6, 7];
 
+    let [pawn, setPawn] = useState('');
+
     
-    function print(id) {
-        console.log(id)
+    function move(tile) {
+        if (tile === pawn) {
+            setPawn('');
+            return;
+        }
+        setPawn(tile);
     }
 
     function getPawn(col, row) {
@@ -62,28 +68,28 @@ function Board() {
             {rows.map(row => (
                 <div key={'row-' + row} className="flex"> {
                 cols.map(col => (
-                    row % 2 === 0
-                    ? ((col % 2 === 0) 
-                    ? <button key={row + col} onClick={() => print(alpha[col] + row)} className="bg-blue-400 hover:bg-blue-700 text-white font-bold py-12 px-12"> {
-                        getImage(getPawn(col, row))
-                    }
-                        
-                    </button> 
-                    : <button key={row + col} onClick={() => print(alpha[col] + row)} className="bg-white hover:bg-gray-400 text-white font-bold py-12 px-12"> {
-                        getImage(getPawn(col, row))
-                    }
-                    </button>
-                    ) 
-                    : ((col % 2 === 1) 
-                    ? <button key={row + col} onClick={() => print(alpha[col] + row)} className="bg-blue-400 hover:bg-blue-700 text-white font-bold py-12 px-12"> {
-                        getImage(getPawn(col, row))
-                    }
-                    </button> 
-                    : <button key={row + col} onClick={() => print(alpha[col] + row)} className="bg-white hover:bg-gray-400 text-white font-bold py-12 px-12"> {
-                        getImage(getPawn(col, row))
-                    }
-                    </button>
-                )))
+                    ((pawn == '' + row + col) ? // selected tile
+                        <button key={'' + row + col} onClick={() => move('' + row + col)} className="bg-yellow-500 py-12 px-12"> {
+                            getImage(getPawn(col, row))
+                        } </button> 
+                    : (row % 2 === 0 // not selected tile
+                        ? ((col % 2 === 0) // odd columns
+                        ? <button key={'' + row + col} onClick={() => move('' + row + col)} className="bg-blue-400 hover:bg-blue-700 py-12 px-12"> {
+                            getImage(getPawn(col, row))
+                        } </button> 
+                        : <button key={'' + row + col} onClick={() => move('' + row + col)} className="bg-white hover:bg-gray-400 py-12 px-12"> {
+                            getImage(getPawn(col, row))
+                        } </button>
+                        ) 
+                        : ((col % 2 === 1) // even columns
+                        ? <button key={'' + row + col} onClick={() => move('' + row + col)} className="bg-blue-400 hover:bg-blue-700 py-12 px-12"> {
+                            getImage(getPawn(col, row))
+                        } </button> 
+                        : <button key={'' + row + col} onClick={() => move('' + row + col)} className="bg-white hover:bg-gray-400 py-12 px-12"> {
+                            getImage(getPawn(col, row))
+                        } </button>
+                    ))))
+                    )
                 }
                 </div>
             ))}
