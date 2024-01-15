@@ -16,14 +16,25 @@ function Board() {
     const alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
     const cols = [0, 1, 2, 3, 4, 5, 6, 7];
 
-    let [pawn, setPawn] = useState('');
+    let [pawn, setPawn] = useState('.');
+    let [enemy, setEnemy] = useState('b');
 
     
-    function move(tile) {
-        if (tile === pawn) {
-            setPawn('');
+    function move(tile, pawn) {
+        console.log(pawn);
+        if (typeof pawn === 'undefined' || tile === pawn) {
+            setPawn('.');
             return;
         }
+
+        if (pawn === '.') {
+            return;
+        }
+        
+        if (typeof pawn === 'string' && pawn.length > 0 && pawn.substring(0, 1) === enemy) {
+            return;
+        }
+
         setPawn(tile);
     }
 
@@ -32,7 +43,6 @@ function Board() {
     }
 
     function getImage(pawn_id) {
-        console.log(pawn_id)
         switch(pawn_id) {
             case '.':
                 break;
@@ -61,32 +71,16 @@ function Board() {
             case 'bk':
                 return <img src="/b_king.png"></img>
         }
+    }
 
-            // (pawn == '' + row + col) ? // selected tile
-            //             <button key={'' + row + col} onClick={() => move('' + row + col)} className="bg-yellow-500 py-12 px-12"> {
-            //                 getImage(getPawn(col, row))
-            //             } </button> 
-            //         : (row % 2 === 0 // not selected tile
-            //             ? ((col % 2 === 0) // odd columns
-            //             ? <button key={'' + row + col} onClick={() => move('' + row + col)} className="bg-blue-400 hover:bg-blue-700 py-12 px-12"> {
-            //                 getImage(getPawn(col, row))
-            //             } </button> 
-            //             : <button key={'' + row + col} onClick={() => move('' + row + col)} className="bg-white hover:bg-gray-400 py-12 px-12"> {
-            //                 getImage(getPawn(col, row))
-            //             } </button>
-            //             ) 
-            //             : ((col % 2 === 1) // even columns
-            //             ? <button key={'' + row + col} onClick={() => move('' + row + col)} className="bg-blue-400 hover:bg-blue-700 py-12 px-12"> {
-            //                 getImage(getPawn(col, row))
-            //             } </button> 
-            //             : <button key={'' + row + col} onClick={() => move('' + row + col)} className="bg-white hover:bg-gray-400 py-12 px-12"> {
-            //                 getImage(getPawn(col, row))
-            //             } </button>
-            // ))
+    function getFirstChar(char) {
+        if (typeof char === 'string' && pawn.length > 0) {
+            return char.substring(0, 1);
         }
+    }
+    
     
     function getTile(row, col) {
-
             if (pawn == '' + row + col) {
                 return <button key={'' + row + col} onClick={() => move('' + row + col)} className="bg-yellow-500" style={{height:100, width:100}}> {
                     getImage(getPawn(col, row))
@@ -94,23 +88,57 @@ function Board() {
             } else {
                 if (row % 2 === 0) {
                     if (col % 2 === 0) {
-                        return <button key={'' + row + col} onClick={() => move('' + row + col)} style={{height:100, width:100}} className="bg-green-400 hover:bg-green-700 h2"> {
-                            getImage(getPawn(col, row))
-                        } </button>; 
+                        switch (getFirstChar(getPawn(col, row))) {
+                            case enemy: // enemy tiles
+                            case '.': // empty tiles
+                                return <button key={'' + row + col} onClick={() => move('' + row + col, getPawn(col, row))} style={{height:100, width:100}} className="bg-green-400 hover:cursor-auto"> {
+                                    getImage(getPawn(col, row))
+                                } </button>; 
+                            default: // pawn tiles
+                                return <button key={'' + row + col} onClick={() => move('' + row + col, getPawn(col, row))} style={{height:100, width:100}} className="bg-green-400 hover:bg-green-700"> {
+                                    getImage(getPawn(col, row))
+                                } </button>; 
+                        }
                     } else {
-                        return <button key={'' + row + col} onClick={() => move('' + row + col)} style={{height:100, width:100}} className="bg-white hover:bg-gray-400"> {
-                            getImage(getPawn(col, row))
-                        } </button>;
+                        switch (getFirstChar(getPawn(col, row))) {
+                            case enemy: // enemy tiles
+                            case '.': // empty tiles
+                                return <button key={'' + row + col} onClick={() => move('' + row + col, getPawn(col, row))} style={{height:100, width:100}} className="bg-white hover:cursor-auto"> {
+                                    getImage(getPawn(col, row))
+                                } </button>;
+                            default: // pawn tiles
+                                return <button key={'' + row + col} onClick={() => move('' + row + col, getPawn(col, row))} style={{height:100, width:100}} className="bg-white hover:bg-gray-400"> {
+                                    getImage(getPawn(col, row))
+                                } </button>;
+                        }
                     }
                 } else {
                     if (col % 2 === 1) {
-                        return <button key={'' + row + col} onClick={() => move('' + row + col)} style={{height:100, width:100}} className="bg-green-400 hover:bg-green-700"> {
-                            getImage(getPawn(col, row))
-                        } </button>;
+                        switch (getFirstChar(getPawn(col, row))) {
+                            case enemy: // enemy tiles
+                            case '.': // empty tiles
+                                return <button key={'' + row + col} onClick={() => move('' + row + col, getPawn(col, row))} style={{height:100, width:100}} className="bg-green-400 hover:cursor-auto"> {
+                                    getImage(getPawn(col, row))
+                                } </button>;
+                            default: // pawn tiles
+                                return <button key={'' + row + col} onClick={() => move('' + row + col, getPawn(col, row))} style={{height:100, width:100}} className="bg-green-400 hover:bg-green-700"> {
+                                    getImage(getPawn(col, row))
+                                } </button>;
+                        }
+                        
                     } else {
-                        return <button key={'' + row + col} onClick={() => move('' + row + col)} style={{height:100, width:100}} className="bg-white hover:bg-gray-400"> {
-                            getImage(getPawn(col, row))
-                    } </button>;
+                        switch (getFirstChar(getPawn(col, row))) {
+                            case enemy: // enemy tiles
+                            case '.': // empty tiles
+                                return <button key={'' + row + col} onClick={() => move('' + row + col, getPawn(col, row))} style={{height:100, width:100}} className="bg-white hover:cursor-auto"> {
+                                    getImage(getPawn(col, row))
+                                } </button>;
+                            default: // pawn tiles
+                                return <button key={'' + row + col} onClick={() => move('' + row + col, getPawn(col, row))} style={{height:100, width:100}} className="bg-white hover:bg-gray-400"> {
+                                    getImage(getPawn(col, row))
+                                } </button>;
+                        }
+                        
                 }
             }
         }
