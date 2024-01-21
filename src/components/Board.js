@@ -17,25 +17,39 @@ function Board() {
     const cols = [0, 1, 2, 3, 4, 5, 6, 7];
 
     let [pawn, setPawn] = useState('.');
+    let [pawnType, setPawnType] = useState('.');
     let [enemy, setEnemy] = useState('b');
 
     
-    function move(tile, pawn) {
-        console.log(pawn);
-        if (typeof pawn === 'undefined' || tile === pawn) {
+    function select(tile, selectePawn) {
+        if (typeof selectePawn === 'undefined' || tile === selectePawn) {
             setPawn('.');
+            setPawnType('.');
             return;
         }
 
-        if (pawn === '.') {
+        if (selectePawn === '.') { // selected tile first
+            if (pawnType !== '.') {
+                move(pawn, tile);
+            }
             return;
         }
         
-        if (typeof pawn === 'string' && pawn.length > 0 && pawn.substring(0, 1) === enemy) {
+        if (typeof selectePawn === 'string' && selectePawn.length > 0 && selectePawn.substring(0, 1) === enemy) {
             return;
         }
 
         setPawn(tile);
+        setPawnType(selectePawn);
+    }
+
+    function move(prev, next) {
+        let temp = board[8-prev.charAt(0)][prev.charAt(1)];
+        board[8-prev.charAt(0)][prev.charAt(1)] = board[8-next.charAt(0)][next.charAt(1)];
+        board[8-next.charAt(0)][next.charAt(1)] = temp;
+        console.log("pawn moved " + temp + getPawn(next.charAt(1), next.charAt(0)));
+        setPawn('.');
+        setPawnType('.');
     }
 
     function getPawn(col, row) {
@@ -102,61 +116,38 @@ function Board() {
     
     function getTile(row, col) {
             if (pawn == '' + row + col) {
-                return <button key={'' + row + col} onClick={() => move('' + row + col)} className="bg-yellow-500" style={{height:100, width:100}}> {
+                return <button key={'' + row + col} onClick={() => select('' + row + col)} className="bg-yellow-500" style={{height:100, width:100}}> {
                     getImage(getPawn(col, row))
                 } </button>;
             } else {
-                if (row % 2 === 0) {
-                    if (col % 2 === 0) {
-                        switch (getTypeofTile(col, row)) {
-                            case 1:
-                                return <button key={'' + row + col} style={{height:100, width:100}} className="bg-green-400 hover:cursor-auto"> {
-                                    getImage(getPawn(col, row))
-                                } </button>; 
-                            case 2:
-                                return <button key={'' + row + col} onClick={() => move('' + row + col, getPawn(col, row))} style={{height:100, width:100}} className="bg-green-400 hover:bg-green-700"> {
-                                    getImage(getPawn(col, row))
-                                } </button>;
-                        }
-                    } else {
-                        switch (getTypeofTile(col, row)) {
-                            case 1:
-                                return <button key={'' + row + col} style={{height:100, width:100}} className="bg-white hover:cursor-auto"> {
-                                    getImage(getPawn(col, row))
-                                } </button>;
-                            case 2:
-                                return <button key={'' + row + col} onClick={() => move('' + row + col, getPawn(col, row))} style={{height:100, width:100}} className="bg-white hover:bg-gray-400"> {
-                                    getImage(getPawn(col, row))
-                                } </button>;
-                        }
+
+                if ((row % 2 === 0 && col % 2 === 0) || (row % 2 === 1 && col % 2 === 1)) {
+                    // green tile
+                    switch (getTypeofTile(col, row)) {
+                        case 1:
+                            return <button key={'' + row + col} style={{height:100, width:100}} className="bg-green-400 hover:cursor-auto"> {
+                                getImage(getPawn(col, row))
+                            } </button>; 
+                        case 2:
+                            return <button key={'' + row + col} onClick={() => select('' + row + col, getPawn(col, row))} style={{height:100, width:100}} className="bg-green-400 hover:bg-green-700"> {
+                                getImage(getPawn(col, row))
+                            } </button>;
                     }
                 } else {
-                    if (col % 2 === 1) {
-                        switch (getTypeofTile(col, row)) {
-                            case 1:
-                                return <button key={'' + row + col} style={{height:100, width:100}} className="bg-green-400 hover:cursor-auto"> {
-                                    getImage(getPawn(col, row))
-                                } </button>; 
-                            case 2:
-                                return <button key={'' + row + col} onClick={() => move('' + row + col, getPawn(col, row))} style={{height:100, width:100}} className="bg-green-400 hover:bg-green-700"> {
-                                    getImage(getPawn(col, row))
-                                } </button>;
-                        }
-                    } else {
-                        switch (getTypeofTile(col, row)) {
-                            case 1:
-                                return <button key={'' + row + col} style={{height:100, width:100}} className="bg-white hover:cursor-auto"> {
-                                    getImage(getPawn(col, row))
-                                } </button>;
-                            case 2:
-                                return <button key={'' + row + col} onClick={() => move('' + row + col, getPawn(col, row))} style={{height:100, width:100}} className="bg-white hover:bg-gray-400"> {
-                                    getImage(getPawn(col, row))
-                                } </button>;
-                        }
+                    // white tile
+                    switch (getTypeofTile(col, row)) {
+                        case 1:
+                            return <button key={'' + row + col} style={{height:100, width:100}} className="bg-white hover:cursor-auto"> {
+                                getImage(getPawn(col, row))
+                            } </button>;
+                        case 2:
+                            return <button key={'' + row + col} onClick={() => select('' + row + col, getPawn(col, row))} style={{height:100, width:100}} className="bg-white hover:bg-gray-400"> {
+                                getImage(getPawn(col, row))
+                            } </button>;
+                    }
                 }
             }
         }
-    }
 
 
     return(
