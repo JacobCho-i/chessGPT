@@ -43,11 +43,20 @@ function Board() {
         setPawnType(selectePawn);
     }
 
+    function validate(prev, next) {
+        //add back end code here to verify the movement
+        return true;
+    }
+    
+
     function move(prev, next) {
+        if (!validate(prev, next)) {
+            alert('Invalid move!'); 
+            return;
+        }
         let temp = board[8-prev.charAt(0)][prev.charAt(1)];
         board[8-prev.charAt(0)][prev.charAt(1)] = board[8-next.charAt(0)][next.charAt(1)];
         board[8-next.charAt(0)][next.charAt(1)] = temp;
-        console.log("pawn moved " + temp + getPawn(next.charAt(1), next.charAt(0)));
         setPawn('.');
         setPawnType('.');
     }
