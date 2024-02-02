@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Board from './components/Board';
+import Navbar from './components/NavBar';
 
   console.log("hello");
   let messages = [];
@@ -61,16 +62,9 @@ import Board from './components/Board';
 
     return (
       <div>
+        <Navbar/>
         <div className="flex justify-between items-start h-[350px]">
           <div>
-            <p>Data from Python: {data}</p>
-            <p>input received in Python: {status}</p>
-            <p>Pick your champion. Your choice : {champ}</p>
-            <div className='py-4 px-4'>
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4" onClick={() => processMessage("Malzhar")}>Malzhar</button>
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mx-4" onClick={() => processMessage("Garen")}>Garen</button>
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4" onClick={() => processMessage("Sylas")}>Sylas</button>
-            </div>
           </div>
           <div className='mx-16 max-h-[300px] overflow-y-auto w-[300px]'>
             <p>Message from ChatGPT: </p>
