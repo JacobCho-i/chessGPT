@@ -6,6 +6,9 @@ import Footer from './components/Footer';
   console.log("hello");
   let messages = [];
 
+  let knockedWhitePawns = ['wp', 'wp', 'wr'];
+  let knockedBlackPawns = ['bp', 'bk', 'bb']; 
+
   function App() {
     
     const [data, setData] = useState('');
@@ -61,6 +64,37 @@ import Footer from './components/Footer';
       }
     }
 
+    function getImage(pawn_id) {
+      switch(pawn_id) {
+          case '.':
+              break;
+          case 'wp':
+              return <img src="/w_peasant.png"></img>
+          case 'wr':
+              return <img src="/w_rook.png"></img>
+          case 'wn':
+              return <img src="/w_knight.png"></img>
+          case 'wb':
+              return <img src="/w_bishop.png"></img>
+          case 'wq':
+              return <img src="/w_queen.png"></img>
+          case 'wk':
+              return <img src="/w_king.png"></img>
+          case 'bp':
+              return <img src="/b_peasant.png"></img>
+          case 'br':
+              return <img src="/b_rook.png"></img>
+          case 'bn':
+              return <img src="/b_knight.png"></img>
+          case 'bb':
+              return <img src="/b_bishop.png"></img>
+          case 'bq':
+              return <img src="/b_queen.png"></img>
+          case 'bk':
+              return <img src="/b_king.png"></img>
+      }
+  }
+
     return (
       <div className="flex flex-col min-h-screen">
         <Navbar/>
@@ -77,8 +111,28 @@ import Footer from './components/Footer';
               </ul>
             </div>
           </div>
-          <div className="flex justify-center items-center">
+          <div className="flex justify-center space-x-20">
+            <div className='top-0 justify-center'>
+              <div className='text-center'>
+                ChatGPT
+              </div>
+              {knockedBlackPawns.map(pawn => ((
+                <div className='mb-[-50px]'>
+                  {getImage(pawn)}
+                </div>
+              )))}
+            </div>
             <Board/>
+            <div className='top-0'>
+              <div className='text-center'>
+                You
+              </div>
+              {knockedWhitePawns.map(pawn => ((
+                  <div className='mb-[-50px]'>
+                  {getImage(pawn)}
+                </div>
+              )))}
+            </div>
           </div>
           <div className="flex justify-between items-start h-[100px]"/>
         </div>
