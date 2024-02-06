@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Board from './components/Board';
 import Navbar from './components/NavBar';
+import Footer from './components/Footer';
 
   console.log("hello");
   let messages = [];
@@ -61,25 +62,31 @@ import Navbar from './components/NavBar';
     }
 
     return (
-      <div>
+      <div className="flex flex-col min-h-screen">
         <Navbar/>
-        <div className="flex justify-between items-start h-[350px]">
-          <div>
+        <div className="flex flex-col flex-grow">
+          <div className="flex justify-between items-start h-[100px]">
+            <div>
+            </div>
+            <div className='mx-16 max-h-[300px] overflow-y-auto w-[300px]'>
+              <p>Message from ChatGPT: </p>
+              <ul>
+                {messages.map((message, index) => (
+                  <li key={index}>{message}</li>
+                ))}
+              </ul>
+            </div>
           </div>
-          <div className='mx-16 max-h-[300px] overflow-y-auto w-[300px]'>
-            <p>Message from ChatGPT: </p>
-            <ul>
-              {messages.map((message, index) => (
-                <li key={index}>{message}</li>
-              ))}
-            </ul>
+          <div className="flex justify-center items-center">
+            <Board/>
           </div>
+          <div className="flex justify-between items-start h-[100px]"/>
         </div>
-        <div className="flex justify-center items-center">
-          <Board/>
-        </div>
+        <Footer/>
       </div>
     );
+
+    
   }
 
   export default App;
