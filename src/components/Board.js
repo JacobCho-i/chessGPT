@@ -28,7 +28,7 @@ function Board() {
             return;
         }
 
-        if (selectePawn === '.') { // selected tile first
+        if (selectePawn === '.' || typeof selectePawn === 'string' && selectePawn.length > 0 && selectePawn.substring(0, 1) === enemy) { // selected tile first
             if (pawnType !== '.') {
                 move(pawn, tile);
             }
@@ -55,8 +55,15 @@ function Board() {
             return;
         }
         let temp = board[8-prev.charAt(0)][prev.charAt(1)];
-        board[8-prev.charAt(0)][prev.charAt(1)] = board[8-next.charAt(0)][next.charAt(1)];
-        board[8-next.charAt(0)][next.charAt(1)] = temp;
+        let nextPawn = board[8-next.charAt(0)][next.charAt(1)];
+        if (typeof nextPawn === 'string' && nextPawn.length > 0 && nextPawn.substring(0, 1) === enemy) {
+            board[8-next.charAt(0)][next.charAt(1)] = board[8-prev.charAt(0)][prev.charAt(1)];
+            board[8-prev.charAt(0)][prev.charAt(1)] = ".";
+        }
+        else {
+            board[8-prev.charAt(0)][prev.charAt(1)] = board[8-next.charAt(0)][next.charAt(1)];
+            board[8-next.charAt(0)][next.charAt(1)] = temp;
+        }
         setPawn('.');
         setPawnType('.');
     }
