@@ -46,7 +46,6 @@ function Board() {
     function validate(prev, next) {
         // call back-end to get legit moves
         let moves = [];
-
         if (moves.includes(next)) {
             return true
         }

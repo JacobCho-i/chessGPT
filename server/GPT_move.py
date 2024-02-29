@@ -86,28 +86,20 @@ def move(str, client, board, move_list):
 
 ####################################################################################
 class board:
+
+    def create_empty_board(self):
+        board = []
+        for i in range(0, 8):
+            row = []
+            for j in range(0, 8):
+                row.append('.')
+            board.append(row)
+        return board
+
     def __init__(self):
-        self.visual_board = [
-                      ['.','.','.','.','.','.','.','.'],
-                      ['.','.','.','.','.','.','.','.'],
-                      ['.','.','.','.','.','.','.','.'],
-                      ['.','.','.','.','.','.','.','.'],
-                      ['.','.','.','.','.','.','.','.'],
-                      ['.','.','.','.','.','.','.','.'],
-                      ['.','.','.','.','.','.','.','.'],
-                      ['.','.','.','.','.','.','.','.']
-                     ]
+        self.visual_board = self.create_empty_board()
         
-        self.board = [
-                      ['.','.','.','.','.','.','.','.'],
-                      ['.','.','.','.','.','.','.','.'],
-                      ['.','.','.','.','.','.','.','.'],
-                      ['.','.','.','.','.','.','.','.'],
-                      ['.','.','.','.','.','.','.','.'],
-                      ['.','.','.','.','.','.','.','.'],
-                      ['.','.','.','.','.','.','.','.'],
-                      ['.','.','.','.','.','.','.','.']
-                     ]
+        self.board = self.create_empty_board()
         
         self.board_states = []
         self.num_moves = 0
@@ -158,31 +150,15 @@ class board:
         #if(self.visual_board[row][col] == 'K' or self.visual_board[row][col] == 'k'):
            # count += 1
 
-        if(self.visual_board[row - 1][col] == 'K' or self.visual_board[row - 1][col] == 'k'):
-            count += 1
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                if (i == 1 and j == 1):
+                    continue
 
-        if(self.visual_board[row + 1][col] == 'K' or self.visual_board[row + 1][col] == 'k'):
-            count += 1
+                if (self.visual_board[row + i][col + j].lower() == 'k'):
+                    count += 1
 
-        if(self.visual_board[row][col - 1] == 'K' or self.visual_board[row][col - 1] == 'k'):
-            count += 1
-
-        if(self.visual_board[row][col + 1] == 'K' or self.visual_board[row][col + 1] == 'k'):
-            count += 1
-
-        if(self.visual_board[row - 1][col - 1] == 'K' or self.visual_board[row - 1][col - 1] == 'k'):
-            count += 1
-
-        if(self.visual_board[row - 1][col + 1] == 'K' or self.visual_board[row - 1][col + 1] == 'k'):
-            count += 1
-
-        if(self.visual_board[row + 1][col - 1] == 'K' or self.visual_board[row + 1][col - 1] == 'k'):
-            count += 1
-
-        if(self.visual_board[row + 1][col + 1] == 'K' or self.visual_board[row + 1][col + 1] == 'k'):
-            count += 1
-
-        if(count == 1):
+        if (count == 1):
             return False
 
         return True
@@ -718,18 +694,11 @@ def set_board(board):
 
     K = king(board, 0, 4, 'W')
 
-    P1 = pawn(board, 1, 0, 'W')
-    P2 = pawn(board, 1, 1, 'W')
-    P3 = pawn(board, 1, 2, 'W')
-    P4 = pawn(board, 1, 3, 'W')
-    P5 = pawn(board, 1, 4, 'W')
-    P6 = pawn(board, 1, 5, 'W')
-    P7 = pawn(board, 1, 6, 'W')
-    P8 = pawn(board, 1, 7, 'W')
-
+    Plist = []
+    for i in range(0, 8):
+        Plist.append(pawn(board, 1, i, 'B'))
 
     #black pieces
-
     r1 = rook(board, 7, 0, 'B')
     r2 = rook(board, 7, 7, 'B')
 
@@ -743,19 +712,19 @@ def set_board(board):
 
     k = king(board, 7, 4, 'B')
 
-    p1 = pawn(board, 6, 0, 'B')
-    p2 = pawn(board, 6, 1, 'B')
-    p3 = pawn(board, 6, 2, 'B')
-    p4 = pawn(board, 6, 3, 'B')
-    p5 = pawn(board, 6, 4, 'B')
-    p6 = pawn(board, 6, 5, 'B')
-    p7 = pawn(board, 6, 6, 'B')
-    p8 = pawn(board, 6, 7, 'B')
-
+    plist = []
+    for i in range(0, 8):
+        plist.append(pawn(board, 6, i, 'B'))
+    
     #piece dictionary
+    wp = [R1, R2, N1, N2, B1, B2, Q, K]
+    bp = [r1, r2, n1, n2, b1, b2, q, k]
+    for i in range (0, 8):
+        wp.append(Plist[i])
+        bp.append(plist[i])
 
-    pieces.update({'white_pieces' : [R1, R2, N1, N2, B1, B2, Q, K, P1, P2, P3, P4, P5, P6, P7, P8]})
-    pieces.update({'black_pieces' : [r1, r2, n1, n2, b1, b2, q, k, p1, p2, p3, p4, p5, p6, p7, p8]})
+    pieces.update({'white_pieces' : wp})
+    pieces.update({'black_pieces' : bp})
 
     #set_pieces
 
@@ -795,9 +764,6 @@ if __name__ == '__main__':
     for i in k.find_legal_moves(last_move):
         b.visual_board[i[0]][i[1]] = '?'
     b.print_board()
-
-
-
 
 
     '''
