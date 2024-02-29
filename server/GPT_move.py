@@ -109,6 +109,40 @@ class board:
                       ['.','.','.','.','.','.','.','.']
                      ]
         
+        self.board_states = []
+        self.num_moves = 0
+
+        self.black_left_castle = True
+        self.black_right_castle = True
+        self.white_left_castle = True
+        self.white_right_castle = True
+
+    
+    def disable_castle(self, row, col):
+        if (row == 0 and col == 4):
+            self.white_left_castle = False
+            self.white_right_castle = False
+
+        elif (row == 7 and col == 4):
+            self.black_left_castle = False
+            self.black_right_castle = False
+
+        elif (row == 0 and col == 0):
+            self.white_left_castle = False
+
+        elif (row == 0 and col == 7):
+            self.white_right_castle = False
+
+        elif (row == 7 and col == 0):
+            self.black_left_castle = False
+
+        elif (row == 7 and col == 7):
+            self.black_right_castle = False
+
+    def return_castle_states(self):
+        states = {'black_left':self.black_left_castle, 'black_right':self.black_right_castle, 'white_left':self.white_left_caslte, 'white_right':self.white_right_castle}
+        return states
+        
 
     def check_ally(self, row, col, side):
         if self.board[row][col] == '.':
@@ -118,10 +152,50 @@ class board:
             return False
         else:
             return True
+        
+    def check_enemy_king(self, row, col):
+        count = 0
+        #if(self.visual_board[row][col] == 'K' or self.visual_board[row][col] == 'k'):
+           # count += 1
+
+        if(self.visual_board[row - 1][col] == 'K' or self.visual_board[row - 1][col] == 'k'):
+            count += 1
+
+        if(self.visual_board[row + 1][col] == 'K' or self.visual_board[row + 1][col] == 'k'):
+            count += 1
+
+        if(self.visual_board[row][col - 1] == 'K' or self.visual_board[row][col - 1] == 'k'):
+            count += 1
+
+        if(self.visual_board[row][col + 1] == 'K' or self.visual_board[row][col + 1] == 'k'):
+            count += 1
+
+        if(self.visual_board[row - 1][col - 1] == 'K' or self.visual_board[row - 1][col - 1] == 'k'):
+            count += 1
+
+        if(self.visual_board[row - 1][col + 1] == 'K' or self.visual_board[row - 1][col + 1] == 'k'):
+            count += 1
+
+        if(self.visual_board[row + 1][col - 1] == 'K' or self.visual_board[row + 1][col - 1] == 'k'):
+            count += 1
+
+        if(self.visual_board[row + 1][col + 1] == 'K' or self.visual_board[row + 1][col + 1] == 'k'):
+            count += 1
+
+        if(count == 1):
+            return False
+
+        return True
     
     def set_piece(self, coord, piece):
         self.visual_board[coord[0]][coord[1]] = piece.icon
         self.board[coord[0]][coord[1]] = piece
+
+    def increment_num_moves(self):
+        self.num_moves += 1
+
+    def return_num_moves(self):
+        return self.num_moves
 
     def remove_piece(self, coord):
         self.board[coord[0]][coord[1]] = "."
@@ -140,6 +214,19 @@ class board:
             i -= 1
         visual += ' '.join(self.visual_board[0])
         return visual
+    
+    def save_board_states(self):
+        self.board_states.append(self.return_visual_board())
+
+    def return_board_states(self):
+        return self.board_states
+    
+    def print_board_states(self):
+        print('_______________')
+        for i in range(self.num_moves):
+            print(i)
+            print(self.board_states[i])
+            print('_______________')
     
     def print_board(self):
         print('    _______________')
@@ -213,6 +300,8 @@ class pawn:
     def move_piece(self, row, col, last_move):
         self.board.remove_piece((self.row, self.col))
         self.board.set_piece((row, col), self)
+        self.board.increment_num_moves()
+        self.board.save_board_states()
         last_move['icon'] = self.icon
         
         if (self.col == col):
@@ -243,28 +332,28 @@ class king:
             self.icon = 'k'
     
     def find_legal_moves(self, last_move):
-        if (self.col >= 1 and self.board.check_ally(self.row, self.col-1, self.side) == False): 
+        if (self.col >= 1 and self.board.check_ally(self.row, self.col-1, self.side) == False and self.board.check_enemy_king(self.row, self.col - 1) == False): 
             self.legal_moves.add((self.row, self.col - 1))
 
-        if (self.col <= 6 and self.board.check_ally(self.row, self.col+1, self.side) == False): 
+        if (self.col <= 6 and self.board.check_ally(self.row, self.col+1, self.side) == False and self.board.check_enemy_king(self.row, self.col + 1) == False): 
             self.legal_moves.add((self.row, self.col + 1))
 
-        if (self.row >= 1 and self.board.check_ally(self.row-1, self.col, self.side) == False): 
+        if (self.row >= 1 and self.board.check_ally(self.row-1, self.col, self.side) == False and self.board.check_enemy_king(self.row - 1, self.col) == False): 
             self.legal_moves.add((self.row - 1, self.col))
 
-        if (self.row <= 6 and self.board.check_ally(self.row+1, self.col, self.side) == False): 
+        if (self.row <= 6 and self.board.check_ally(self.row+1, self.col, self.side) == False and self.board.check_enemy_king(self.row + 1, self.col) == False): 
             self.legal_moves.add((self.row + 1, self.col))
 
-        if (self.row >= 1 and self.col >= 1 and self.board.check_ally(self.row-1, self.col-1, self.side) == False): 
+        if (self.row >= 1 and self.col >= 1 and self.board.check_ally(self.row-1, self.col-1, self.side) == False and self.board.check_enemy_king(self.row - 1, self.col - 1) == False): 
             self.legal_moves.add((self.row - 1, self.col - 1))
 
-        if (self.row <= 6 and self.col <= 6 and self.board.check_ally(self.row+1, self.col+1, self.side) == False): 
+        if (self.row <= 6 and self.col <= 6 and self.board.check_ally(self.row+1, self.col+1, self.side) == False and self.board.check_enemy_king(self.row + 1, self.col + 1) == False): 
             self.legal_moves.add((self.row + 1, self.col + 1))
 
-        if (self.row <= 6 and self.col >= 1 and self.board.check_ally(self.row+1, self.col-1, self.side) == False): 
+        if (self.row <= 6 and self.col >= 1 and self.board.check_ally(self.row+1, self.col-1, self.side) == False and self.board.check_enemy_king(self.row + 1, self.col - 1) == False): 
             self.legal_moves.add((self.row + 1, self.col - 1))
             
-        if (self.row >= 1 and self.col <= 6 and self.board.check_ally(self.row-1, self.col+1, self.side) == False): 
+        if (self.row >= 1 and self.col <= 6 and self.board.check_ally(self.row-1, self.col+1, self.side) == False and self.board.check_enemy_king(self.row - 1, self.col + 1) == False): 
             self.legal_moves.add((self.row - 1, self.col + 1))
 
         return self.legal_moves
@@ -275,6 +364,11 @@ class king:
     def move_piece(self, row, col, last_move):
         self.board.remove_piece((self.row, self.col))
         self.board.set_piece((row, col), self.icon)
+        self.board.increment_num_moves()
+        self.board.save_board_states()
+        if ((self.row == 0 and self.col == 4) or (self.row == 7 and self.col == 4)):
+            self.board.disable_castle(self.row, self.col)
+
         last_move['icon'] = self.icon
         
         last_move['distance'] = 1
@@ -342,6 +436,11 @@ class rook:
     def move_piece(self, row, col, last_move):
         self.board.remove_piece((self.row, self.col))
         self.board.set_piece((row, col), self.icon)
+        self.board.increment_num_moves()
+        self.board.save_board_states()
+        if ((self.row == 7 and self.col == 0) or (self.row == 7 and self.col == 7) or (self.row == 0 and self.col == 0) or (self.row == 0 and self.col == 7)):
+            self.board.disable_castle(self.row, self.col)
+            
         last_move['icon'] = self.icon
         
         last_move['distance'] = 1
@@ -416,6 +515,8 @@ class bishop:
     def move_piece(self, row, col, last_move):
         self.board.remove_piece((self.row, self.col))
         self.board.set_piece((row, col), self)
+        self.board.increment_num_moves()
+        self.board.save_board_states()
         last_move['icon'] = self.icon
         
         last_move['distance'] = 1
@@ -475,6 +576,8 @@ class knight:
     def move_piece(self, row, col, last_move):
         self.board.remove_piece((self.row, self.col))
         self.board.set_piece((row, col), self)
+        self.board.increment_num_moves()
+        self.board.save_board_states()
         last_move['icon'] = self.icon
         
         last_move['distance'] = 1
@@ -582,6 +685,8 @@ class queen:
     def move_piece(self, row, col, last_move):
         self.board.remove_piece((self.row, self.col))
         self.board.set_piece((row, col), self)
+        self.board.increment_num_moves()
+        self.board.save_board_states()
         last_move['icon'] = self.icon
         
         last_move['distance'] = 1
@@ -662,7 +767,6 @@ def set_board(board):
 
     return pieces
 
-
 ####################################################################################
 
 
@@ -681,8 +785,22 @@ if __name__ == '__main__':
     #print(test2)
 
     #print(move("e2:e4", client, board, m))
-
+    
     b = board()
+    k = king(b, 4, 4, 'B')
+    K = king(b, 5, 5, 'W')
+    k.set_piece()
+    K.set_piece()
+    last_move = {'icon' : '.', 'distance' : 0, 'row' : 0, 'col' : 0}
+    for i in k.find_legal_moves(last_move):
+        b.visual_board[i[0]][i[1]] = '?'
+    b.print_board()
+
+
+
+
+
+    '''
     chess_board = set_board(b)
     print(chess_board)
     b.print_board()
@@ -693,7 +811,11 @@ if __name__ == '__main__':
     print("--------------------------")
     chess_board['black_pieces'][12].move_piece(4, 4, last_move)
     print(b.return_visual_board())
+    print(b.return_num_moves())
+    print(b.return_board_states())
+    b.print_board_states()
 
+    '''
     '''
     for i in chess_board['white_pieces']:
         print(i.icon)
@@ -710,8 +832,8 @@ if __name__ == '__main__':
 
     #print(P3.find_legal_moves(last_move))
     #print(P3.return_coord())
-    print("--------------------------")
-    b.print_board()
+    #print("--------------------------")
+    #b.print_board()
 
 
 
