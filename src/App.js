@@ -17,6 +17,9 @@ import Footer from './components/Footer';
     const [msg, setMsg] = useState('');
 
     useEffect(() => {
+      messages.push("AAAAAAAAAAAAAAAAAAAAAAAAA");
+      messages.push("BBBBBBBBBBBBBBBBBBBBBBBBB");
+      messages.push("CCCCCCCCCCCCCCCCCCCCCCCCC");
       fetch('http://localhost:5000/api/data')
         .then(response => response.json())
         .then(data => setData(data.data));
@@ -98,7 +101,7 @@ import Footer from './components/Footer';
     return (
       <div className="flex flex-col min-h-screen">
         <Navbar/>
-        <div className="flex flex-col flex-grow">
+        <div className="flex flex-col bg-green-100 flex-grow">
           <div className="flex justify-between items-start h-[100px]">
             <div>
             </div>

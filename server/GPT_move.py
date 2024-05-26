@@ -7,6 +7,8 @@ load_dotenv()
 
 #AI prompt: make a move as white based on this chess position, give the move notation in the format of (original square, new square) without additional text
 
+#TODO: Check, legal moves, rules (low prio) 
+
 def ask_gpt(client, move_list, board, error_str = "", side = "black"):
     try:
         move_str = ' '.join(move_list)
@@ -111,6 +113,7 @@ class board:
 
     
     def disable_castle(self, row, col):
+
         if (row == 0 and col == 4):
             self.white_left_castle = False
             self.white_right_castle = False

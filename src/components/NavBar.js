@@ -1,6 +1,6 @@
 export default function Navbar() {
     return (
-        <nav className="bg-green-800 p-4 top-0 p-4">
+        <nav className="bg-green-600 p-4 top-0 p-4">
             <ul className="text-white flex text-2xl">
                 <li className="mr-auto">
                 <div className="flex items-center space-x-4">

@@ -49,7 +49,7 @@ function Board() {
         if (moves.includes(next)) {
             return true
         }
-        return false;
+        return true;
     }
     
 
@@ -145,11 +145,11 @@ function Board() {
                     // green tile
                     switch (getTypeofTile(col, row)) {
                         case 1:
-                            return <button key={'' + row + col} style={{height:100, width:100}} className="bg-green-400 hover:cursor-auto"> {
+                            return <button key={'' + row + col} style={{height:100, width:100}} className="bg-amber-700 hover:cursor-auto"> {
                                 getImage(getPawn(col, row))
                             } </button>; 
                         case 2:
-                            return <button key={'' + row + col} onClick={() => select('' + row + col, getPawn(col, row))} style={{height:100, width:100}} className="bg-green-400 hover:bg-green-700"> {
+                            return <button key={'' + row + col} onClick={() => select('' + row + col, getPawn(col, row))} style={{height:100, width:100}} className="bg-amber-700 hover:bg-amber-900"> {
                                 getImage(getPawn(col, row))
                             } </button>;
                     }
@@ -171,7 +171,7 @@ function Board() {
 
 
     return(
-        <div className="bg-green-400 px-2 py-2">
+        <div className="bg-amber-700 px-3 py-3 rounded-md">
             {rows.map(row => (
                 <div key={'row-' + row} className="flex"> {
                 cols.map(col => (
