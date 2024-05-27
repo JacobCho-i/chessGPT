@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Board from './components/Board';
 import Navbar from './components/NavBar';
 import Footer from './components/Footer';
+import Popup from "./components/Popup"
 
   console.log("hello");
   let messages = [];
@@ -15,6 +16,15 @@ import Footer from './components/Footer';
     const [status, setStatus] = useState('');
     const [champ, setChamp] = useState('');
     const [msg, setMsg] = useState('');
+    const [isPopupVisible, setPopupVisible] = useState(true);
+
+    const showPopup = () => {
+      setPopupVisible(true);
+    };
+  
+    const closePopup = () => {
+      setPopupVisible(false);
+    };
 
     useEffect(() => {
       messages.push("AAAAAAAAAAAAAAAAAAAAAAAAA");
@@ -126,6 +136,9 @@ import Footer from './components/Footer';
               )))}
             </div>
             <Board/>
+            <div> 
+              {isPopupVisible && <Popup onClose={closePopup} />}
+            </div>
             <div className='top-0'>
               <div className='text-center'>
                 You
