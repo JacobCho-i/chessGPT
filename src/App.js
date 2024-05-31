@@ -1,9 +1,14 @@
-import './App.css';
 import React, { useEffect, useState } from 'react';
 import Board from './components/Board';
+import Navbar from './components/NavBar';
+import Footer from './components/Footer';
+import Popup from "./components/Popup"
 
   console.log("hello");
   let messages = [];
+
+  let knockedWhitePawns = ['wp', 'wp', 'wr'];
+  let knockedBlackPawns = ['bp', 'bk', 'bb']; 
 
   function App() {
     
@@ -11,8 +16,20 @@ import Board from './components/Board';
     const [status, setStatus] = useState('');
     const [champ, setChamp] = useState('');
     const [msg, setMsg] = useState('');
+    const [isPopupVisible, setPopupVisible] = useState(true);
+
+    const showPopup = () => {
+      setPopupVisible(true);
+    };
+  
+    const closePopup = () => {
+      setPopupVisible(false);
+    };
 
     useEffect(() => {
+      messages.push("AAAAAAAAAAAAAAAAAAAAAAAAA");
+      messages.push("BBBBBBBBBBBBBBBBBBBBBBBBB");
+      messages.push("CCCCCCCCCCCCCCCCCCCCCCCCC");
       fetch('http://localhost:5000/api/data')
         .then(response => response.json())
         .then(data => setData(data.data));
@@ -60,33 +77,86 @@ import Board from './components/Board';
       }
     }
 
+    function getImage(pawn_id) {
+      switch(pawn_id) {
+          case '.':
+              break;
+          case 'wp':
+              return <img src="/w_peasant.png"></img>
+          case 'wr':
+              return <img src="/w_rook.png"></img>
+          case 'wn':
+              return <img src="/w_knight.png"></img>
+          case 'wb':
+              return <img src="/w_bishop.png"></img>
+          case 'wq':
+              return <img src="/w_queen.png"></img>
+          case 'wk':
+              return <img src="/w_king.png"></img>
+          case 'bp':
+              return <img src="/b_peasant.png"></img>
+          case 'br':
+              return <img src="/b_rook.png"></img>
+          case 'bn':
+              return <img src="/b_knight.png"></img>
+          case 'bb':
+              return <img src="/b_bishop.png"></img>
+          case 'bq':
+              return <img src="/b_queen.png"></img>
+          case 'bk':
+              return <img src="/b_king.png"></img>
+      }
+  }
+
     return (
-      <div>
-        <div className="flex justify-between items-start h-[350px]">
-          <div>
-            <p>Data from Python: {data}</p>
-            <p>input received in Python: {status}</p>
-            <p>Pick your champion. Your choice : {champ}</p>
-            <div className='py-4 px-4'>
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4" onClick={() => processMessage("Malzhar")}>Malzhar</button>
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mx-4" onClick={() => processMessage("Garen")}>Garen</button>
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4" onClick={() => processMessage("Sylas")}>Sylas</button>
+      <div className="flex flex-col min-h-screen">
+        <Navbar/>
+        <div className="flex flex-col bg-green-100 flex-grow">
+          <div className="flex justify-between items-start h-[100px]">
+            <div>
+            </div>
+            <div className='mx-16 max-h-[300px] overflow-y-auto w-[300px]'>
+              <p>Message from ChatGPT: </p>
+              <ul>
+                {messages.map((message, index) => (
+                  <li key={index}>{message}</li>
+                ))}
+              </ul>
             </div>
           </div>
-          <div className='mx-16 max-h-[300px] overflow-y-auto w-[300px]'>
-            <p>Message from ChatGPT: </p>
-            <ul>
-              {messages.map((message, index) => (
-                <li key={index}>{message}</li>
-              ))}
-            </ul>
+          <div className="flex justify-center space-x-20">
+            <div className='top-0 justify-center'>
+              <div className='text-center'>
+                ChatGPT
+              </div>
+              {knockedBlackPawns.map(pawn => ((
+                <div className='mb-[-50px]'>
+                  {getImage(pawn)}
+                </div>
+              )))}
+            </div>
+            <Board/>
+            <div> 
+              {isPopupVisible && <Popup onClose={closePopup} />}
+            </div>
+            <div className='top-0'>
+              <div className='text-center'>
+                You
+              </div>
+              {knockedWhitePawns.map(pawn => ((
+                  <div className='mb-[-50px]'>
+                  {getImage(pawn)}
+                </div>
+              )))}
+            </div>
           </div>
+          <div className="flex justify-between items-start h-[100px]"/>
         </div>
-        <div className="flex justify-center items-center">
-          <Board/>
-        </div>
+        <Footer/>
       </div>
     );
+
+    
   }
 
   export default App;
