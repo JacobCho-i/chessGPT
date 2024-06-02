@@ -56,7 +56,7 @@ def ask_gpt(client, move_str, board, error_str = "", side = "black"):
             print("start: ", start)
             end = move[1]
             print("end: ", end)
-            return [start, end, get_coords(start), get_coords(end)]
+            return [start, end, get_coords(start), get_coords(end), reply]
             #start_coord = get_coords(start)
             #end_coord = get_coords(end)
             #print("return: ", start, end, start_coord, end_coord)
@@ -1009,16 +1009,76 @@ def set_board(board):
 
 
 ####################################################################################
+def convert_notation(coord):
+    match coord[1]:
+        case 0:
+            col = 'a'
+        case 1:
+            col = 'b'
+        case 2:
+            col = 'c'
+        case 3:
+            col = 'd'
+        case 4:
+            col = 'e'
+        case 5:
+            col = 'f'
+        case 6:
+            col = 'g'
+        case 7:
+            col = 'h'
+    return col + str(coord[0]+1)
+
+def legal_move(board, side, curr_row, curr_col, row, col, last_move):
+    if(board.board[curr_row][curr_col] == '.'):
+        return False
+    elif(board.board[curr_row][curr_col].side != 'W'):
+        return False
+    else:
+        return board.move_is_legal(curr_row, curr_col, row, col, last_move)
+    
+def check_valid(chatgpt, board, begin_coord, end_coord, last_move):
+    if(legal_move(board, 'W', begin_coord[0], begin_coord[1], end_coord[0], end_coord[1], last_move) == False):
+        return False
+    else:
+        if(board.board[begin_coord[0]][begin_coord[1]] != '.'):
+            if(b.board[end_coord[0]][end_coord[1]] != '.'):
+                b.board[end_coord[0]][end_coord[1]].disabled = True
+        board.board[begin_coord[0]][begin_coord[1]].move_piece(end_coord[0], end_coord[1], last_move)
+        if(board.check_mate('B', last_move) == True):        
+            return {"result": "white won", "previous": begin_coord, "next": end_coord, "response": "Well played! You Won!"}
+
+        message = convert_notation(begin_coord) + " to " + convert_notation(end_coord)
+        move = ask_gpt(chatgpt, message, board, '', 'black')
+        result = "no win"
+        if(b.board[move[2][0]][move[2][1]] != '.'):
+            if(b.board[move[3][0]][move[3][1]] != '.'):
+                b.board[move[3][0]][move[3][1]].disabled = True
+            if(b.pieces['black_pieces'][7].disabled == True):
+                result = "black surrenders"
+            else:
+                b.board[move[2][0]][move[2][1]].move_piece(move[3][0], move[3][1], last_move)
+        
+        
+        if(b.check_mate('W', last_move) == True):
+            result = "black won"
+        
+        return {"result": result, "previous": move[2], "next": move[3], "response": move[4]}
 
 
+
+
+####################################################################################
 if __name__ == '__main__':  
     client = OpenAI()
 
     m = ''
     b = board()
     last_move = {'icon' : '.', 'distance' : 0, 'row' : 0, 'col' : 0}
-
-    i = 0
+    print(check_valid(client, b, (1, 4), (3, 4), last_move))
+    b.print_board()
+    '''
+    #i = 0
     #print(get_coords("e4"))
     while(True):
         print("white move: ")
@@ -1070,7 +1130,17 @@ if __name__ == '__main__':
                 print(i.icon, i.find_legal_moves(last_move))
             print("Black won!")
             break
-        
+    '''
+
+
+
+
+
+
+
+
+
+
     #test1 = get_web_notation("Nc3")
     #test2 = get_gpt_notation(test1)
     #print(test1)
