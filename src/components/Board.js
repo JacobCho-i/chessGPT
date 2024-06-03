@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 
 let board = [
-    ['br','bn','bb','bq','bk','bb','bn','br'],
-    ['bp','bp','bp','bp','bp','bp','bp','bp'],
-    ['.','.','.','.','.','.','.','.'],
-    ['.','.','.','.','.','.','.','.'],
-    ['.','.','.','.','.','.','.','.'],
-    ['.','.','.','.','.','.','.','.'],
+    ['wr','wn','wb','wq','wk','wb','wn','wr'],
     ['wp','wp','wp','wp','wp','wp','wp','wp'],
-    ['wr','wn','wb','wq','wk','wb','wn','wr']
+    ['.','.','.','.','.','.','.','.'],
+    ['.','.','.','.','.','.','.','.'],
+    ['.','.','.','.','.','.','.','.'],
+    ['.','.','.','.','.','.','.','.'],
+    ['bp','bp','bp','bp','bp','bp','bp','bp'],
+    ['br','bn','bb','bq','bk','bb','bn','br']
+    
 ];
 
 function Board() {
@@ -18,7 +19,7 @@ function Board() {
 
     let [pawn, setPawn] = useState('.');
     let [pawnType, setPawnType] = useState('.');
-    let [enemy, setEnemy] = useState('b');
+    let [enemy, setEnemy] = useState('w');
 
     
     function select(tile, selectePawn) {
@@ -46,12 +47,26 @@ function Board() {
     function validate(prev, next) {
         // call back-end to get legit moves
         let moves = [];
+        processMove(prev, next);
         if (moves.includes(next)) {
             return true
         }
         return true;
     }
     
+    function processMove(prev, next) {
+        const dataToSend = {prevMove: prev, nextMove: next};
+        fetch("http://localhost:5000/process_move", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(dataToSend),
+        })
+        .then(response => response.json())
+        .then(data => console.log(data.data))
+        .catch(error => console.error('Error:', error));
+      }
 
     function move(prev, next) {
         if (!validate(prev, next)) {

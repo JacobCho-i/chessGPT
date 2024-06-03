@@ -3,8 +3,8 @@ import time
 import copy
 #import chess
 from openai import OpenAI
-#from dotenv import load_dotenv
-#load_dotenv()
+from dotenv import load_dotenv
+load_dotenv()
 
 #AI prompt: make a move as white based on this chess position, give the move notation in the format of (original square, new square) without additional text
 
