@@ -14,7 +14,7 @@ def ask_gpt(client, move_str, board, error_str = "", side = "black"):
         model = "gpt-4o",
         messages = [
             {"role": "system", "content": "You are a chess master that will make good chess moves"},
-            {"role": "user", "content":  error_str + "last move was " + move_str + ", based on the game moves given, make one chess move on " + side + " side, return the move in the format of tuple(starting coordinate, end coordinate) without additional texts"}
+            {"role": "user", "content":  error_str + "last move was " + move_str + ", based on the game moves given, make one chess move on " + side + " side, return the move in the format of tuple in a format of (starting coordinate, end coordinate) without additional texts. Some example response is (e4, f4), (a1, a3), follow this format"}
         ]
     )
     
@@ -40,7 +40,6 @@ def ask_gpt(client, move_str, board, error_str = "", side = "black"):
     '''
     if(len(response) > 10 or "," not in response):
         print(response)
-        time.sleep(5)
         return ask_gpt(client, move_str, board, "only return the tuple(starting coordinate, end coordinate) ")
     else:
         try:
@@ -64,7 +63,6 @@ def ask_gpt(client, move_str, board, error_str = "", side = "black"):
         
         except:
             print(response)
-            time.sleep(5)
             return ask_gpt(client, move_str, board, "only return the tuple(starting coordinate, end coordinate) ")
             #print("ChatGPT made an illegal move")
             #error_str = response + " was an illegal move! "
@@ -1045,8 +1043,22 @@ def check_valid(chatgpt, board, begin_coord, end_coord, last_move):
             if(board.board[end_coord[0]][end_coord[1]] != '.'):
                 board.board[end_coord[0]][end_coord[1]].disabled = True
         board.board[begin_coord[0]][begin_coord[1]].move_piece(end_coord[0], end_coord[1], last_move)
-        if(board.check_mate('B', last_move) == True):        
-            return {"result": "white won", "previous": begin_coord, "next": end_coord, "response": "Well played! You Won!"}
+        board.print_board()
+
+        if(board.check_mate('B', last_move) == True):
+            disabled_white_pieces = []
+            for i in board.pieces['white_pieces']:
+                if(i.disabled == True):
+                    disabled_white_pieces.append(i.icon)
+            
+            disabled_black_pieces = []
+            for i in board.pieces['black_pieces']:
+                if(i.disabled == True):
+                    disabled_black_pieces.append(i.icon)
+
+            newboard = copy.copy(board.visual_board)
+            newboard[0], newboard[1], newboard[2], newboard[3], newboard[4], newboard[5], newboard[6], newboard[7] = newboard[7], newboard[6], newboard[5], newboard[4], newboard[3], newboard[2], newboard[1], newboard[0]
+            return {"result": "white won", "previous": begin_coord, "next": end_coord, "response": "Well played! You Won!", "board": newboard, "disabled_white_pieces": disabled_white_pieces, "disabled_black_pieces": disabled_black_pieces}
 
         message = convert_notation(begin_coord) + " to " + convert_notation(end_coord)
         move = ask_gpt(chatgpt, message, board, '', 'black')
@@ -1059,14 +1071,24 @@ def check_valid(chatgpt, board, begin_coord, end_coord, last_move):
             else:
                 board.board[move[2][0]][move[2][1]].move_piece(move[3][0], move[3][1], last_move)
         
+        board.print_board()
         
         if(board.check_mate('W', last_move) == True):
             result = "black won"
-        newboard = copy.deepcopy(board.visual_board)
+        
+        disabled_white_pieces = []
+        for i in board.pieces['white_pieces']:
+            if(i.disabled == True):
+                disabled_white_pieces.append(i.icon)
+        
+        disabled_black_pieces = []
+        for i in board.pieces['black_pieces']:
+            if(i.disabled == True):
+                disabled_black_pieces.append(i.icon)
+
+        newboard = copy.copy(board.visual_board)
         newboard[0], newboard[1], newboard[2], newboard[3], newboard[4], newboard[5], newboard[6], newboard[7] = newboard[7], newboard[6], newboard[5], newboard[4], newboard[3], newboard[2], newboard[1], newboard[0]
-        return {"result": result, "previous": move[2], "next": move[3], "response": move[4], "board": newboard}
-
-
+        return {"result": result, "previous": move[2], "next": move[3], "response": move[4], "board": newboard, "disabled_white_pieces": disabled_white_pieces, "disabled_black_pieces": disabled_black_pieces}
 
 
 ####################################################################################

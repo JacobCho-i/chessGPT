@@ -3,6 +3,7 @@ import Board from './components/Board';
 import Navbar from './components/NavBar';
 import Footer from './components/Footer';
 import Popup from "./components/Popup"
+import Spinner from './components/Spinner';
 
   console.log("hello");
   let messages = [];
@@ -18,6 +19,10 @@ import Popup from "./components/Popup"
     const [msg, setMsg] = useState('');
     const [isPopupVisible, setPopupVisible] = useState(true);
     const [responseState, setResponseState] = useState([]);
+
+    const updateBoardState = (newState) => {
+      setResponseState(newState);
+    };
 
     const showPopup = () => {
       setPopupVisible(true);
@@ -125,7 +130,7 @@ import Popup from "./components/Popup"
           <div className="flex justify-center space-x-20">
             <div className='top-0 justify-center'>
               <div className='text-center'>
-                ChatGPT
+                ChatGPT    
               </div>
               {knockedBlackPawns.map(pawn => ((
                 <div className='mb-[-50px]'>
@@ -133,7 +138,7 @@ import Popup from "./components/Popup"
                 </div>
               )))}
             </div>
-            <Board responseState={responseState} updateResponseState={setResponseState}/>
+            <Board responseState={responseState} updateResponseState={updateBoardState}/>
             <div> 
               {isPopupVisible && <Popup onClose={closePopup} />}
             </div>

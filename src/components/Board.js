@@ -1,6 +1,6 @@
 import { data } from 'autoprefixer';
 import React, { useEffect, useState } from 'react';
-
+import Spinner from './Spinner';
 /*
 let board = [
     ['wr','wn','wb','wq','wk','wb','wn','wr'],
@@ -32,10 +32,19 @@ function Board({ responseState, updateResponseState }) {
         ]
     )
     let [pawn, setPawn] = useState('.');
+    let [loading, setLoading] = useState(false);
     let [pawnType, setPawnType] = useState('.');
     let [enemy, setEnemy] = useState('b');
     let [legal, setLegal] = useState(false);
 
+    function showSpinner() {
+        document.getElementById('spinner').style.display = 'block';
+    }
+      
+    function hideSpinner() {
+        document.getElementById('spinner').style.display = 'none';
+    }
+      
     
     function select(tile, selectePawn) {
         if (typeof selectePawn === 'undefined' || tile === selectePawn) {
@@ -69,6 +78,7 @@ function Board({ responseState, updateResponseState }) {
     
     async function processMove(prev, next) {
         const dataToSend = {prevMove: prev, nextMove: next};
+        setLoading(true);
         const response = await fetch("http://localhost:5000/process_move", {
             method: 'POST',
             headers: {
@@ -81,11 +91,11 @@ function Board({ responseState, updateResponseState }) {
         console.log(data.legal)
         console.log("board: " + board)
         if (!data.legal) {
+            setLoading(false);
             return false;
         }
         setBoard(data.board)
-        var responses = responseState
-        responses.push("my move is " + data.response)
+        var responses = [...responseState, "my move is " + data.response];
         updateResponseState(responses)
         console.log(responseState)
         console.log(board)
@@ -110,6 +120,7 @@ function Board({ responseState, updateResponseState }) {
         */
         setPawn('.');
         setPawnType('.');
+        setLoading(false);
         return data.legal
       }
 
@@ -222,6 +233,7 @@ function Board({ responseState, updateResponseState }) {
 
     return(
         <div className="bg-amber-700 px-3 py-3 rounded-md">
+            {loading ? <Spinner /> : <></> }
             {rows.map(row => (
                 <div key={'row-' + row} className="flex"> {
                 cols.map(col => (
