@@ -1,5 +1,7 @@
+import { data } from 'autoprefixer';
 import React, { useEffect, useState } from 'react';
 
+/*
 let board = [
     ['wr','wn','wb','wq','wk','wb','wn','wr'],
     ['wp','wp','wp','wp','wp','wp','wp','wp'],
@@ -9,17 +11,30 @@ let board = [
     ['.','.','.','.','.','.','.','.'],
     ['bp','bp','bp','bp','bp','bp','bp','bp'],
     ['br','bn','bb','bq','bk','bb','bn','br']
-    
 ];
+*/
 
-function Board() {
+function Board({ responseState, updateResponseState }) {
     const rows = [8, 7, 6, 5, 4, 3, 2, 1];
     const alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
     const cols = [0, 1, 2, 3, 4, 5, 6, 7];
 
+    let [board, setBoard] = useState(
+        [
+            ['br','bn','bb','bq','bk','bb','bn','br'],
+            ['bp','bp','bp','bp','bp','bp','bp','bp'],
+            ['.','.','.','.','.','.','.','.'],
+            ['.','.','.','.','.','.','.','.'],
+            ['.','.','.','.','.','.','.','.'],
+            ['.','.','.','.','.','.','.','.'],
+            ['wp','wp','wp','wp','wp','wp','wp','wp'],
+            ['wr','wn','wb','wq','wk','wb','wn','wr']
+        ]
+    )
     let [pawn, setPawn] = useState('.');
     let [pawnType, setPawnType] = useState('.');
-    let [enemy, setEnemy] = useState('w');
+    let [enemy, setEnemy] = useState('b');
+    let [legal, setLegal] = useState(false);
 
     
     function select(tile, selectePawn) {
@@ -44,36 +59,38 @@ function Board() {
         setPawnType(selectePawn);
     }
 
-    function validate(prev, next) {
+    async function validate(prev, next) {
         // call back-end to get legit moves
-        let moves = [];
-        processMove(prev, next);
-        if (moves.includes(next)) {
-            return true
-        }
-        return true;
+        let moves = []; 
+        const legal = await processMove(prev, next);
+        console.log(legal)
+        return legal;
     }
     
-    function processMove(prev, next) {
+    async function processMove(prev, next) {
         const dataToSend = {prevMove: prev, nextMove: next};
-        fetch("http://localhost:5000/process_move", {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(dataToSend),
-        })
-        .then(response => response.json())
-        .then(data => console.log(data.data))
-        .catch(error => console.error('Error:', error));
-      }
-
-    function move(prev, next) {
-        if (!validate(prev, next)) {
-            alert('Invalid move!'); 
-            return;
+        const response = await fetch("http://localhost:5000/process_move", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dataToSend),
+          });
+        const data = await response.json();
+        console.log(data)
+        console.log(data.legal)
+        console.log("board: " + board)
+        if (!data.legal) {
+            return false;
         }
-        let temp = board[8-prev.charAt(0)][prev.charAt(1)];
+        setBoard(data.board)
+        var responses = responseState
+        responses.push("my move is " + data.response)
+        updateResponseState(responses)
+        console.log(responseState)
+        console.log(board)
+        /*
+        let tempmov = board[8-prev.charAt(0)][prev.charAt(1)];
         let nextPawn = board[8-next.charAt(0)][next.charAt(1)];
         if (typeof nextPawn === 'string' && nextPawn.length > 0 && nextPawn.substring(0, 1) === enemy) {
             board[8-next.charAt(0)][next.charAt(1)] = board[8-prev.charAt(0)][prev.charAt(1)];
@@ -81,10 +98,28 @@ function Board() {
         }
         else {
             board[8-prev.charAt(0)][prev.charAt(1)] = board[8-next.charAt(0)][next.charAt(1)];
-            board[8-next.charAt(0)][next.charAt(1)] = temp;
+            board[8-next.charAt(0)][next.charAt(1)] = tempmov;
         }
+        const prevmove = data.prev;
+        const nextmove = data.next;
+        console.log(prevmove)
+        console.log(nextmove)
+        let temp = board[7-prevmove[0]][prevmove[1]];
+        board[7-nextmove[0]][nextmove[1]] = temp;
+        board[7-prevmove[0]][prevmove[1]] = ".";
+        */
         setPawn('.');
         setPawnType('.');
+        return data.legal
+      }
+
+    async function move(prev, next) {
+        const invalid = await validate(prev, next);
+        console.log("prev: " + prev + " next: " + next)
+        if (!invalid) {
+            alert('Invalid move!'); 
+            return;
+        }
     }
 
     function getPawn(col, row) {

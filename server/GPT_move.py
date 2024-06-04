@@ -173,13 +173,13 @@ class board:
             return False
         else:
             if(side == 'W' or side == 'w'):
-                for i in b.pieces['black_pieces']:
+                for i in self.pieces['black_pieces']:
                     for j in i.find_legal_moves(last_move):
                         if(self.pre_check(side, i.row, i.col, j[0], j[1], last_move) == False):
                             return False
                 return True
             elif(side == 'B' or side == 'b'):
-                for i in b.pieces['white_pieces']:
+                for i in self.pieces['white_pieces']:
                     for j in i.find_legal_moves(last_move):
                         if(self.pre_check(side, i.row, i.col, j[0], j[1], last_move) == False):
                             return False
@@ -1042,8 +1042,8 @@ def check_valid(chatgpt, board, begin_coord, end_coord, last_move):
         return False
     else:
         if(board.board[begin_coord[0]][begin_coord[1]] != '.'):
-            if(b.board[end_coord[0]][end_coord[1]] != '.'):
-                b.board[end_coord[0]][end_coord[1]].disabled = True
+            if(board.board[end_coord[0]][end_coord[1]] != '.'):
+                board.board[end_coord[0]][end_coord[1]].disabled = True
         board.board[begin_coord[0]][begin_coord[1]].move_piece(end_coord[0], end_coord[1], last_move)
         if(board.check_mate('B', last_move) == True):        
             return {"result": "white won", "previous": begin_coord, "next": end_coord, "response": "Well played! You Won!"}
@@ -1051,19 +1051,20 @@ def check_valid(chatgpt, board, begin_coord, end_coord, last_move):
         message = convert_notation(begin_coord) + " to " + convert_notation(end_coord)
         move = ask_gpt(chatgpt, message, board, '', 'black')
         result = "no win"
-        if(b.board[move[2][0]][move[2][1]] != '.'):
-            if(b.board[move[3][0]][move[3][1]] != '.'):
-                b.board[move[3][0]][move[3][1]].disabled = True
-            if(b.pieces['black_pieces'][7].disabled == True):
+        if(board.board[move[2][0]][move[2][1]] != '.'):
+            if(board.board[move[3][0]][move[3][1]] != '.'):
+                board.board[move[3][0]][move[3][1]].disabled = True
+            if(board.pieces['black_pieces'][7].disabled == True):
                 result = "black surrenders"
             else:
-                b.board[move[2][0]][move[2][1]].move_piece(move[3][0], move[3][1], last_move)
+                board.board[move[2][0]][move[2][1]].move_piece(move[3][0], move[3][1], last_move)
         
         
-        if(b.check_mate('W', last_move) == True):
+        if(board.check_mate('W', last_move) == True):
             result = "black won"
-        
-        return {"result": result, "previous": move[2], "next": move[3], "response": move[4]}
+        newboard = copy.deepcopy(board.visual_board)
+        newboard[0], newboard[1], newboard[2], newboard[3], newboard[4], newboard[5], newboard[6], newboard[7] = newboard[7], newboard[6], newboard[5], newboard[4], newboard[3], newboard[2], newboard[1], newboard[0]
+        return {"result": result, "previous": move[2], "next": move[3], "response": move[4], "board": newboard}
 
 
 

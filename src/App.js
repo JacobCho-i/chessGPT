@@ -17,6 +17,7 @@ import Popup from "./components/Popup"
     const [champ, setChamp] = useState('');
     const [msg, setMsg] = useState('');
     const [isPopupVisible, setPopupVisible] = useState(true);
+    const [responseState, setResponseState] = useState([]);
 
     const showPopup = () => {
       setPopupVisible(true);
@@ -27,14 +28,11 @@ import Popup from "./components/Popup"
     };
 
     useEffect(() => {
-      messages.push("AAAAAAAAAAAAAAAAAAAAAAAAA");
-      messages.push("BBBBBBBBBBBBBBBBBBBBBBBBB");
-      messages.push("CCCCCCCCCCCCCCCCCCCCCCCCC");
-      fetch('http://localhost:5000/api/data')
+      fetch('http://localhost:5000/messages')
         .then(response => response.json())
-        .then(data => setData(data.data));
-      const dataToSend = { key1: 'value1', key2: 'value2' };
-      sendDataToPython(dataToSend);
+        .then(data => {
+          messages = data.data
+        });
     }, []);
 
     function sendDataToPython(data) {
@@ -118,7 +116,7 @@ import Popup from "./components/Popup"
             <div className='mx-16 max-h-[300px] overflow-y-auto w-[300px]'>
               <p>Message from ChatGPT: </p>
               <ul>
-                {messages.map((message, index) => (
+                {responseState.map((message, index) => (
                   <li key={index}>{message}</li>
                 ))}
               </ul>
@@ -135,7 +133,7 @@ import Popup from "./components/Popup"
                 </div>
               )))}
             </div>
-            <Board/>
+            <Board responseState={responseState} updateResponseState={setResponseState}/>
             <div> 
               {isPopupVisible && <Popup onClose={closePopup} />}
             </div>
