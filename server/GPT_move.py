@@ -197,6 +197,7 @@ class board:
             king = self.pieces['black_pieces'][7]
             possible_moves = self.find_all_legal_moves('W', last_move)
             if((king.return_coord()) in possible_moves):
+                print("In check: ", king.return_coord())
                 return True
             else:
                 return False
@@ -233,36 +234,8 @@ class board:
         if(piece2 != '.'):
             piece2.disable = True
 
-        '''
-        if(side == 'W'):
-            for i in b.pieces['white_pieces']:
-                if i.row == curr_row and i.col == curr_col:
-                    i.row = row
-                    i.col = col
-        else:
-            for i in b.pieces['black_pieces']:
-                if i.row == curr_row and i.col == curr_col:
-                    i.row = row
-                    i.col = col
-        '''
         fake_move = last_move
-        '''
-        if(side == 'W' or side == 'w'):
-            king = b.pieces['white_pieces'][7]
-            possible_moves = self.find_all_legal_moves('B', fake_move)
-            if((king.return_coord()) in possible_moves):
-                return True
-            else:
-                return False
 
-        else:
-            king = b.pieces['black_pieces'][7]
-            possible_moves = self.find_all_legal_moves('W', fake_move)
-            if((king.return_coord()) in possible_moves):
-                return True
-            else:
-                return False
-        '''
         return b.in_check(side, fake_move) 
       
 
@@ -550,30 +523,30 @@ class king:
         
         legal_moves = set()
         
-        if (self.col >= 1 and self.board.check_ally(self.row, self.col-1, self.side) == False and self.board.check_enemy_king(self.row, self.col - 1) == False): 
+        if (self.col >= 1 and self.board.check_ally(self.row, self.col-1, self.side) == False): 
             legal_moves.add((self.row, self.col - 1))
 
-        if (self.col <= 6 and self.board.check_ally(self.row, self.col+1, self.side) == False and self.board.check_enemy_king(self.row, self.col + 1) == False): 
+        if (self.col <= 6 and self.board.check_ally(self.row, self.col+1, self.side) == False): 
             legal_moves.add((self.row, self.col + 1))
 
-        if (self.row >= 1 and self.board.check_ally(self.row-1, self.col, self.side) == False and self.board.check_enemy_king(self.row - 1, self.col) == False): 
+        if (self.row >= 1 and self.board.check_ally(self.row-1, self.col, self.side) == False): 
             legal_moves.add((self.row - 1, self.col))
 
-        if (self.row <= 6 and self.board.check_ally(self.row+1, self.col, self.side) == False and self.board.check_enemy_king(self.row + 1, self.col) == False): 
+        if (self.row <= 6 and self.board.check_ally(self.row+1, self.col, self.side) == False): 
             legal_moves.add((self.row + 1, self.col))
 
-        if (self.row >= 1 and self.col >= 1 and self.board.check_ally(self.row-1, self.col-1, self.side) == False and self.board.check_enemy_king(self.row - 1, self.col - 1) == False): 
+        if (self.row >= 1 and self.col >= 1 and self.board.check_ally(self.row-1, self.col-1, self.side) == False): 
             legal_moves.add((self.row - 1, self.col - 1))
 
-        if (self.row <= 6 and self.col <= 6 and self.board.check_ally(self.row+1, self.col+1, self.side) == False and self.board.check_enemy_king(self.row + 1, self.col + 1) == False): 
+        if (self.row <= 6 and self.col <= 6 and self.board.check_ally(self.row+1, self.col+1, self.side) == False): 
             legal_moves.add((self.row + 1, self.col + 1))
 
-        if (self.row <= 6 and self.col >= 1 and self.board.check_ally(self.row+1, self.col-1, self.side) == False and self.board.check_enemy_king(self.row + 1, self.col - 1) == False): 
+        if (self.row <= 6 and self.col >= 1 and self.board.check_ally(self.row+1, self.col-1, self.side) == False): 
             legal_moves.add((self.row + 1, self.col - 1))
             
-        if (self.row >= 1 and self.col <= 6 and self.board.check_ally(self.row-1, self.col+1, self.side) == False and self.board.check_enemy_king(self.row - 1, self.col + 1) == False): 
+        if (self.row >= 1 and self.col <= 6 and self.board.check_ally(self.row-1, self.col+1, self.side) == False): 
             legal_moves.add((self.row - 1, self.col + 1))
-
+        
         if(self.side == 'W' or self.side == 'w'):
             if(self.board.white_left_castle == True):
                 legal_moves.add((self.row, self.col - 2))
@@ -584,6 +557,7 @@ class king:
                 legal_moves.add((self.row, self.col - 2))
             if(self.board.black_right_castle == True):
                 legal_moves.add((self.row, self.col + 2))
+        
         return legal_moves
     
     def set_piece(self):
@@ -1130,9 +1104,10 @@ def check_valid(chatgpt, board, begin_coord, end_coord, last_move):
             board.board[move[2][0]][move[2][1]].move_piece(move[3][0], move[3][1], last_move)
         
         else:
-            p = pawn(board, move[3][0], move[3][1], 'B')
+            
             if(board.board[move[3][0]][move[3][1]] != '.'):
                 board.board[move[3][0]][move[3][1]].disabled == True
+            p = pawn(board, move[3][0], move[3][1], 'B')
             board.remove_piece((move[3][0], move[3][1]))
             board.set_piece((move[3][0], move[3][1]), p)
 

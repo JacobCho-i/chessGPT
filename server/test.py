@@ -47,6 +47,8 @@ def process_move():
     b.print_board()
     if (result == False):
         print("this move is not legal")
+        print(b.pieces['white_pieces'][7].find_legal_moves(last_move))
+        print(b.find_legal_moves('W', last_move))
         return jsonify({'legal': False}) 
     print("this move is legal")
     response.append("my move is " + result['response'])
