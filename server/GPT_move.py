@@ -1032,6 +1032,16 @@ def convert_notation(coord):
             col = 'h'
     return col + str(coord[0]+1)
 
+def king_removed(board, side):
+    icon = 'K'
+    if(side == 'B' or 'b'):
+        icon = 'k'
+    for i in board.board:
+        for j in i:
+            if(j != '.' and j.icon == icon):
+                return False
+    return True
+
 def legal_move(board, side, curr_row, curr_col, row, col, last_move):
     if(board.board[curr_row][curr_col] == '.'):
         return False
@@ -1066,7 +1076,7 @@ def check_valid(chatgpt, board, begin_coord, end_coord, last_move):
             return {"result": "white won", "previous": begin_coord, "next": end_coord, "response": "Well played! You Won!", "board": newboard, "disabled_white_pieces": disabled_white_pieces, "disabled_black_pieces": disabled_black_pieces}
 
         else:
-            if(board.pieces['black_pieces'][7].disabled == True):
+            if(board.pieces['black_pieces'][7].disabled == True or king_removed(board, 'B')):
                 disabled_white_pieces = []
                 for i in board.pieces['white_pieces']:
                     if(i.disabled == True):
@@ -1079,7 +1089,7 @@ def check_valid(chatgpt, board, begin_coord, end_coord, last_move):
                 newboard = copy.copy(board.visual_board)
                 newboard[0], newboard[1], newboard[2], newboard[3], newboard[4], newboard[5], newboard[6], newboard[7] = newboard[7], newboard[6], newboard[5], newboard[4], newboard[3], newboard[2], newboard[1], newboard[0]
                 return {"result": "white won", "previous": begin_coord, "next": end_coord, "response": "Good Game!", "board": newboard, "disabled_white_pieces": disabled_white_pieces, "disabled_black_pieces": disabled_black_pieces}
-            elif(board.pieces['white_pieces'][7].disabled == True):
+            elif(board.pieces['white_pieces'][7].disabled == True or king_removed(board, 'W')):
                 disabled_white_pieces = []
                 for i in board.pieces['white_pieces']:
                     if(i.disabled == True):
@@ -1126,9 +1136,9 @@ def check_valid(chatgpt, board, begin_coord, end_coord, last_move):
             if(i.disabled == True):
                 disabled_black_pieces.append(i.icon)
         
-        if(board.pieces['black_pieces'][7].disabled == True):
+        if(board.pieces['black_pieces'][7].disabled == True or king_removed(board, 'B')):
             result = "white won"
-        elif(board.pieces['white_pieces'][7].disabled == True):
+        elif(board.pieces['white_pieces'][7].disabled == True or king_removed(board, 'W')):
             result = "black won"
 
         newboard = copy.copy(board.visual_board)
