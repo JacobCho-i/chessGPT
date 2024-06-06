@@ -14,7 +14,7 @@ let board = [
 ];
 */
 
-function Board({ responseState, updateResponseState }) {
+function Board({ responseState, updateResponseState, updatePopupState, black, white}) {
     const rows = [8, 7, 6, 5, 4, 3, 2, 1];
     const alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
     const cols = [0, 1, 2, 3, 4, 5, 6, 7];
@@ -88,8 +88,6 @@ function Board({ responseState, updateResponseState }) {
           });
         const data = await response.json();
         console.log(data)
-        console.log(data.legal)
-        console.log("board: " + board)
         if (!data.legal) {
             setLoading(false);
             return false;
@@ -97,8 +95,14 @@ function Board({ responseState, updateResponseState }) {
         setBoard(data.board)
         var responses = [...responseState, "my move is " + data.response];
         updateResponseState(responses)
-        console.log(responseState)
-        console.log(board)
+        if (data.result == "white won") {
+            updatePopupState(1);
+        }
+        if (data.result == "black won") {
+            updatePopupState(2);
+        }
+        black(data.black)
+        white(data.white)
         /*
         let tempmov = board[8-prev.charAt(0)][prev.charAt(1)];
         let nextPawn = board[8-next.charAt(0)][next.charAt(1)];

@@ -17,13 +17,26 @@ import Spinner from './components/Spinner';
     const [status, setStatus] = useState('');
     const [champ, setChamp] = useState('');
     const [msg, setMsg] = useState('');
-    const [isPopupVisible, setPopupVisible] = useState(true);
+    const [isPopupVisible, setPopupVisible] = useState(0);
+    const [knockedWhite, setKnockedWhite] = useState([]);
+    const [knockedBlack, setknockedBlack] = useState([]);
     const [responseState, setResponseState] = useState([]);
 
     const updateBoardState = (newState) => {
       setResponseState(newState);
     };
 
+    const updatePopupState = (newState) => {
+      setPopupVisible(newState);
+    };
+
+    const updateKnockedBlackState = (newState) => {
+      setknockedBlack(newState);
+    };
+
+    const updateKnockedWhiteState = (newState) => {
+      setKnockedWhite(newState);
+    };
     const showPopup = () => {
       setPopupVisible(true);
     };
@@ -132,21 +145,22 @@ import Spinner from './components/Spinner';
               <div className='text-center'>
                 ChatGPT    
               </div>
-              {knockedBlackPawns.map(pawn => ((
+              {knockedBlack.map(pawn => ((
                 <div className='mb-[-50px]'>
                   {getImage(pawn)}
                 </div>
               )))}
             </div>
-            <Board responseState={responseState} updateResponseState={updateBoardState}/>
+            <Board responseState={responseState} updateResponseState={updateBoardState} updatePopupState={updatePopupState} black={updateKnockedBlackState} white={updateKnockedWhiteState}/>
             <div> 
-              {isPopupVisible && <Popup onClose={closePopup} />}
+              {isPopupVisible == 1 && <Popup onClose={closePopup} win={true} />}
+              {isPopupVisible == 2 && <Popup onClose={closePopup} win={false} />}
             </div>
             <div className='top-0'>
               <div className='text-center'>
                 You
               </div>
-              {knockedWhitePawns.map(pawn => ((
+              {knockedWhite.map(pawn => ((
                   <div className='mb-[-50px]'>
                   {getImage(pawn)}
                 </div>

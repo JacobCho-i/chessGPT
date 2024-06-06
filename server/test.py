@@ -81,9 +81,36 @@ def process_move():
                     result['board'][i][j] = "wq"
     print(result['board'])
     print(response)
-    return jsonify({'legal': True, 'board': result['board'], 'prev': [result['previous'][0], result['previous'][1]], 'next': [result['next'][0], result['next'][1]], 'response': result['response']})
-
-
+    for i, string in enumerate(result['disabled_black_pieces']):
+        match string:
+            case "p":
+                result['disabled_black_pieces'][i] = "bp"
+            case "r":
+                result['disabled_black_pieces'][i] = "br"
+            case "n":
+                result['disabled_black_pieces'][i] = "bn"
+            case "b":
+                result['disabled_black_pieces'][i] = "bb"
+            case "k":
+                result['disabled_black_pieces'][i] = "bk"
+            case "q":
+                result['disabled_black_pieces'][i] = "bq"
+    for i, string in enumerate(result['disabled_white_pieces']):
+        match string:
+            case "P":
+                result['disabled_white_pieces'][i] = "wp"
+            case "R":
+                result['disabled_white_pieces'][i] = "wr"
+            case "N":
+                result['disabled_white_pieces'][i] = "wn"
+            case "B":
+                result['disabled_white_pieces'][i] = "wb"
+            case "K":
+                result['disabled_white_pieces'][i] = "wk"
+            case "Q":
+                result['disabled_white_pieces'][i] = "wq"
+    return jsonify({'legal': True, 'result': result['result'], 'board': result['board'], 'prev': [result['previous'][0], result['previous'][1]], 'next': [result['next'][0], result['next'][1]], 'response': result['response'], 
+                    'white': result['disabled_white_pieces'], 'black': result['disabled_black_pieces']})
 
 # url = '/message' + str(index)
 @app.route('/message', methods=['POST'])
