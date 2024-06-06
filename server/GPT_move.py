@@ -1158,6 +1158,7 @@ def check_valid(chatgpt, board, begin_coord, end_coord, last_move):
 
         newboard = copy.copy(board.visual_board)
         newboard[0], newboard[1], newboard[2], newboard[3], newboard[4], newboard[5], newboard[6], newboard[7] = newboard[7], newboard[6], newboard[5], newboard[4], newboard[3], newboard[2], newboard[1], newboard[0]
+        print(disabled_white_pieces)
         return {"result": result, "previous": move[2], "next": move[3], "response": move[4], "board": newboard, "disabled_white_pieces": disabled_white_pieces, "disabled_black_pieces": disabled_black_pieces}
 
 
