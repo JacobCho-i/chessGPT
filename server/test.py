@@ -31,6 +31,14 @@ def process_champion():
     msg = 'My first move is ' + data['champion'] + '!'
     return jsonify({'data': msg})
 
+@app.route('/restart_game', methods=['POST'])
+def restart_game():
+    global b, last_move, response
+    b = board()
+    last_move = {'icon' : '.', 'distance' : 0, 'row' : 0, 'col' : 0}
+    response = []
+    return jsonify({'data': 'successful'})
+
 @app.route('/process_move', methods=['POST'])    
 def process_move():
     data = request.json

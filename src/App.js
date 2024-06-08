@@ -124,6 +124,24 @@ import Spinner from './components/Spinner';
       }
   }
 
+  useEffect(() => {
+    const handlePageRefresh = () => {
+      console.log('Page refreshed!');
+      fetch("http://localhost:5000/restart_game", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify('aaa'),
+      });
+    };
+
+    handlePageRefresh();
+
+    return () => {
+    };
+  }, []);
+
     return (
       <div className="flex flex-col min-h-screen">
         <Navbar/>
