@@ -238,16 +238,29 @@ function Board({ responseState, updateResponseState, updatePopupState, black, wh
     return(
         <div className="bg-amber-700 px-3 py-3 rounded-md">
             {loading ? <Spinner /> : <></> }
-            {rows.map(row => (
-                <div key={'row-' + row} className="flex"> {
-                cols.map(col => (
-                    (
-                        getTile(row, col)
-                    ))
-                    )
-                }
-                </div>
+            <div className='flex justify-center'>
+            {alpha.map(col => (
+                <button key={'' + col} style={{height:30, width:100}} className="bg-amber-700 hover:cursor-auto text-white">{col}</button>
             ))}
+            </div>
+            {rows.map(row => (
+                <div key={'row-' + row} className="flex"> 
+                <button key={'' + row + 'f'} style={{height:100, width:30}} className="bg-amber-700 hover:cursor-auto text-white">{row}
+                </button>
+                    {
+                    cols.map(col => ((
+                        getTile(row, col)
+                        )))
+                    }
+                <button key={'' + row + 'b'} style={{height:100, width:30}} className="bg-amber-700 hover:cursor-auto text-white">{row}</button>
+                </div>
+            ))
+            }
+            <div className='flex justify-center'>
+            {alpha.map(col => (
+                <button key={'' + col} style={{height:30, width:100}} className="bg-amber-700 hover:cursor-auto text-white">{col}</button>
+            ))}
+            </div>
         </div>
     );
 }
