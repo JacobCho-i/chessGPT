@@ -161,6 +161,9 @@ class board:
         self.white_left_castle = True
         self.white_right_castle = True
 
+        self.disabled_white_pieces = []
+        self.disabled_black_pieces = []
+
 
     def return_pieces(self):
         return self.pieces
@@ -245,7 +248,7 @@ class board:
         else:
             piece = self.board[row][col]
             possible_moves = piece.find_legal_moves(last_move)
-            return ((move_row, move_col) in possible_moves and self.pre_check(piece.side, row, col, move_row, move_col, last_move) == False)
+            return (move_row, move_col) in possible_moves#((move_row, move_col) in possible_moves and self.pre_check(piece.side, row, col, move_row, move_col, last_move) == False)
 
 
     def find_legal_moves(self, side, last_move):
@@ -1033,12 +1036,14 @@ def convert_notation(coord):
     return col + str(coord[0]+1)
 
 def king_removed(board, side):
-    icon = 'K'
-    if(side == 'B' or 'b'):
+    board.print_board()
+    if(side == 'B' or side == 'b'):
         icon = 'k'
-    for i in board.board:
+    else:
+        icon = 'K'
+    for i in board.visual_board:
         for j in i:
-            if(j != '.' and j.icon == icon):
+            if(j == icon):
                 return False
     return True
 
@@ -1047,6 +1052,11 @@ def legal_move(board, side, curr_row, curr_col, row, col, last_move):
         return False
     elif(board.board[curr_row][curr_col].side != 'W'):
         return False
+    elif((curr_row == 0 and curr_col == 4) and (board.visual_board[curr_row][curr_col] == 'K') and (row == 0)):
+        if(col == 2):
+            return (board.visual_board[0][1] == '.' and board.visual_board[0][2] == '.' and board.visual_board[0][3] == '.' and board.move_is_legal(curr_row, curr_col, row, col, last_move))
+        elif(col == 6):
+            return (board.visual_board[0][5] == '.' and board.visual_board[0][6] == '.' and board.move_is_legal(curr_row, curr_col, row, col, last_move))
     else:
         return board.move_is_legal(curr_row, curr_col, row, col, last_move)
     
@@ -1057,51 +1067,24 @@ def check_valid(chatgpt, board, begin_coord, end_coord, last_move):
         if(board.board[begin_coord[0]][begin_coord[1]] != '.'):
             if(board.board[end_coord[0]][end_coord[1]] != '.'):
                 board.board[end_coord[0]][end_coord[1]].disabled = True
+                if(board.board[end_coord[0]][end_coord[1]].side == 'W' or board.board[end_coord[0]][end_coord[1]].side == 'w'):
+                    board.disabled_white_pieces.append(board.board[end_coord[0]][end_coord[1]].icon)
+                elif(board.board[end_coord[0]][end_coord[1]].side == 'B' or board.board[end_coord[0]][end_coord[1]].side == 'b'):
+                    board.disabled_black_pieces.append(board.board[end_coord[0]][end_coord[1]].icon)
+
         board.board[begin_coord[0]][begin_coord[1]].move_piece(end_coord[0], end_coord[1], last_move)
         board.print_board()
 
-        if(board.check_mate('B', last_move) == True):
+        if(board.pieces['black_pieces'][7].disabled == True or king_removed(board, 'B') == True):
             disabled_white_pieces = []
-            for i in board.pieces['white_pieces']:
-                if(i.disabled == True):
-                    disabled_white_pieces.append(i.icon)
-            
-            disabled_black_pieces = []
-            for i in board.pieces['black_pieces']:
-                if(i.disabled == True):
-                    disabled_black_pieces.append(i.icon)
-
-            newboard = copy.copy(board.visual_board)
+            newboard = copy.deepcopy(board.visual_board)
             newboard[0], newboard[1], newboard[2], newboard[3], newboard[4], newboard[5], newboard[6], newboard[7] = newboard[7], newboard[6], newboard[5], newboard[4], newboard[3], newboard[2], newboard[1], newboard[0]
-            return {"result": "white won", "previous": begin_coord, "next": end_coord, "response": "Well played! You Won!", "board": newboard, "disabled_white_pieces": disabled_white_pieces, "disabled_black_pieces": disabled_black_pieces}
-
-        else:
-            if(board.pieces['black_pieces'][7].disabled == True or king_removed(board, 'B')):
-                disabled_white_pieces = []
-                for i in board.pieces['white_pieces']:
-                    if(i.disabled == True):
-                        disabled_white_pieces.append(i.icon)
-                
-                disabled_black_pieces = []
-                for i in board.pieces['black_pieces']:
-                    if(i.disabled == True):
-                        disabled_black_pieces.append(i.icon)
-                newboard = copy.copy(board.visual_board)
-                newboard[0], newboard[1], newboard[2], newboard[3], newboard[4], newboard[5], newboard[6], newboard[7] = newboard[7], newboard[6], newboard[5], newboard[4], newboard[3], newboard[2], newboard[1], newboard[0]
-                return {"result": "white won", "previous": begin_coord, "next": end_coord, "response": "Good Game!", "board": newboard, "disabled_white_pieces": disabled_white_pieces, "disabled_black_pieces": disabled_black_pieces}
-            elif(board.pieces['white_pieces'][7].disabled == True or king_removed(board, 'W')):
-                disabled_white_pieces = []
-                for i in board.pieces['white_pieces']:
-                    if(i.disabled == True):
-                        disabled_white_pieces.append(i.icon)
-                
-                disabled_black_pieces = []
-                for i in board.pieces['black_pieces']:
-                    if(i.disabled == True):
-                        disabled_black_pieces.append(i.icon)
-                newboard = copy.copy(board.visual_board)
-                newboard[0], newboard[1], newboard[2], newboard[3], newboard[4], newboard[5], newboard[6], newboard[7] = newboard[7], newboard[6], newboard[5], newboard[4], newboard[3], newboard[2], newboard[1], newboard[0]
-                return {"result": "black won", "previous": begin_coord, "next": end_coord, "response": "Good Game!", "board": newboard, "disabled_white_pieces": disabled_white_pieces, "disabled_black_pieces": disabled_black_pieces}
+            return {"result": "white won", "previous": begin_coord, "next": end_coord, "response": "Good Game!", "board": newboard, "disabled_white_pieces": board.disabled_white_pieces, "disabled_black_pieces": board.disabled_black_pieces}
+        
+        elif(board.pieces['white_pieces'][7].disabled == True or king_removed(board, 'W') == True):
+            newboard = copy.deepcopy(board.visual_board)
+            newboard[0], newboard[1], newboard[2], newboard[3], newboard[4], newboard[5], newboard[6], newboard[7] = newboard[7], newboard[6], newboard[5], newboard[4], newboard[3], newboard[2], newboard[1], newboard[0]
+            return {"result": "black won", "previous": begin_coord, "next": end_coord, "response": "Good Game!", "board": newboard, "disabled_white_pieces": board.disabled_white_pieces, "disabled_black_pieces": board.disabled_black_pieces}
 
 
         message = convert_notation(begin_coord) + " to " + convert_notation(end_coord)
@@ -1110,41 +1093,38 @@ def check_valid(chatgpt, board, begin_coord, end_coord, last_move):
         if(board.board[move[2][0]][move[2][1]] != '.'):
             if(board.board[move[3][0]][move[3][1]] != '.'):
                 board.board[move[3][0]][move[3][1]].disabled = True
+                if(board.board[end_coord[0]][end_coord[1]].side == 'W' or board.board[end_coord[0]][end_coord[1]].side == 'w'):
+                    board.disabled_white_pieces.append(board.board[end_coord[0]][end_coord[1]].icon)
+                elif(board.board[end_coord[0]][end_coord[1]].side == 'B' or board.board[end_coord[0]][end_coord[1]].side == 'b'):
+                    board.disabled_black_pieces.append(board.board[end_coord[0]][end_coord[1]].icon)
 
             board.board[move[2][0]][move[2][1]].move_piece(move[3][0], move[3][1], last_move)
         
         else:
-            
             if(board.board[move[3][0]][move[3][1]] != '.'):
                 board.board[move[3][0]][move[3][1]].disabled == True
+                if(board.board[end_coord[0]][end_coord[1]].side == 'W' or board.board[end_coord[0]][end_coord[1]].side == 'w'):
+                    board.disabled_white_pieces.append(board.board[end_coord[0]][end_coord[1]].icon)
+                elif(board.board[end_coord[0]][end_coord[1]].side == 'B' or board.board[end_coord[0]][end_coord[1]].side == 'b'):
+                    board.disabled_black_pieces.append(board.board[end_coord[0]][end_coord[1]].icon)
+                board.remove_piece((move[3][0], move[3][1]))
             p = pawn(board, move[3][0], move[3][1], 'B')
-            board.remove_piece((move[3][0], move[3][1]))
+            board.pieces['black_pieces'].append(p)
             board.set_piece((move[3][0], move[3][1]), p)
+            #board.board[move[3][0]][move[3][1]].move_piece(move[3][0], move[3][1], last_move)
 
         board.print_board()
         
-        if(board.check_mate('W', last_move) == True):
-            result = "black won"
-        
-        disabled_white_pieces = []
-        for i in board.pieces['white_pieces']:
-            if(i.disabled == True):
-                disabled_white_pieces.append(i.icon)
-        
-        disabled_black_pieces = []
-        for i in board.pieces['black_pieces']:
-            if(i.disabled == True):
-                disabled_black_pieces.append(i.icon)
-        
-        if(board.pieces['black_pieces'][7].disabled == True or king_removed(board, 'B')):
+        if(board.pieces['black_pieces'][7].disabled == True or king_removed(board, 'B') == True):
             result = "white won"
-        elif(board.pieces['white_pieces'][7].disabled == True or king_removed(board, 'W')):
+        elif(board.pieces['white_pieces'][7].disabled == True or king_removed(board, 'W') == True):
             result = "black won"
+        else:
+            result = "no win"
 
-        newboard = copy.copy(board.visual_board)
+        newboard = copy.deepcopy(board.visual_board)
         newboard[0], newboard[1], newboard[2], newboard[3], newboard[4], newboard[5], newboard[6], newboard[7] = newboard[7], newboard[6], newboard[5], newboard[4], newboard[3], newboard[2], newboard[1], newboard[0]
-        print(disabled_white_pieces)
-        return {"result": result, "previous": move[2], "next": move[3], "response": move[4], "board": newboard, "disabled_white_pieces": disabled_white_pieces, "disabled_black_pieces": disabled_black_pieces}
+        return {"result": result, "previous": move[2], "next": move[3], "response": move[4], "board": newboard, "disabled_white_pieces": board.disabled_white_pieces, "disabled_black_pieces": board.disabled_black_pieces}
 
 
 ####################################################################################
