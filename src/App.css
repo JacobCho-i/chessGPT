@@ -29,10 +29,34 @@
 }
 
 @keyframes App-logo-spin {
-  from {
+  from { 
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
   }
+}
+
+.kanit-regular {
+  font-family: "Kanit", sans-serif;
+  font-size: 26px;
+  font-weight: 400;
+  font-style: normal;
+  color: green;
+}
+
+.kanit-small {
+  font-family: "Kanit", sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  font-style: normal;
+  color: green;
+}
+
+.exo {
+  font-family: "Exo 2", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+  color: green;
 }

@@ -3,6 +3,7 @@ import Board from './components/Board';
 import Navbar from './components/NavBar';
 import Footer from './components/Footer';
 import Popup from "./components/Popup"
+import './App.css';
 import Spinner from './components/Spinner';
 
   console.log("hello");
@@ -150,8 +151,8 @@ import Spinner from './components/Spinner';
             <div>
             </div>
             <div className='mx-16 max-h-[300px] overflow-y-auto w-[300px]'>
-              <p>Message from ChatGPT: </p>
-              <ul>
+              <p class='kanit-regular'>Message from ChatGPT: </p>
+              <ul class='kanit-small'>
                 {responseState.map((message, index) => (
                   <li key={index}>{message}</li>
                 ))}
@@ -160,7 +161,7 @@ import Spinner from './components/Spinner';
           </div>
           <div className="flex justify-center space-x-20">
             <div className='top-0 justify-center'>
-              <div className='text-center'>
+              <div class="exo" className='text-center'>
                 ChatGPT    
               </div>
               {knockedBlack.map(pawn => ((
@@ -175,7 +176,7 @@ import Spinner from './components/Spinner';
               {isPopupVisible == 2 && <Popup onClose={closePopup} win={false} />}
             </div>
             <div className='top-0'>
-              <div className='text-center'>
+              <div class="exo"  className='text-center'>
                 You
               </div>
               {knockedWhite.map(pawn => ((
