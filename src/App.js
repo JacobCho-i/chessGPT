@@ -21,6 +21,7 @@ import Spinner from './components/Spinner';
     const [isPopupVisible, setPopupVisible] = useState(0);
     const [knockedWhite, setKnockedWhite] = useState([]);
     const [knockedBlack, setknockedBlack] = useState([]);
+    const [refreshKey, setRefreshKey] = useState(0);
     const [responseState, setResponseState] = useState([]);
 
     const updateBoardState = (newState) => {
@@ -35,6 +36,10 @@ import Spinner from './components/Spinner';
       setknockedBlack(newState);
     };
 
+    const updateRefresh = (newState) => {
+      setRefreshKey(newState)
+    };
+
     const updateKnockedWhiteState = (newState) => {
       setKnockedWhite(newState);
     };
@@ -44,6 +49,15 @@ import Spinner from './components/Spinner';
   
     const closePopup = () => {
       setPopupVisible(false);
+      fetch("http://localhost:5000/restart_game", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify('aaa'),
+      });
+      setResponseState([]);
+      setRefreshKey(1);
     };
 
     useEffect(() => {
@@ -161,7 +175,7 @@ import Spinner from './components/Spinner';
           </div>
           <div className="flex justify-center space-x-20">
             <div className='top-0 justify-center'>
-              <div class="exo" className='text-center'>
+              <div class="kanit-small" className='text-center'>
                 ChatGPT    
               </div>
               {knockedBlack.map(pawn => ((
@@ -170,13 +184,14 @@ import Spinner from './components/Spinner';
                 </div>
               )))}
             </div>
-            <Board responseState={responseState} updateResponseState={updateBoardState} updatePopupState={updatePopupState} black={updateKnockedBlackState} white={updateKnockedWhiteState}/>
+            <Board responseState={responseState} updateResponseState={updateBoardState} updatePopupState={updatePopupState} black={updateKnockedBlackState} white={updateKnockedWhiteState} 
+            refreshKey={refreshKey} setRefresh={updateRefresh}/>
             <div> 
               {isPopupVisible == 1 && <Popup onClose={closePopup} win={true} />}
               {isPopupVisible == 2 && <Popup onClose={closePopup} win={false} />}
             </div>
             <div className='top-0'>
-              <div class="exo"  className='text-center'>
+              <div class="kanit-small"  className='text-center'>
                 You
               </div>
               {knockedWhite.map(pawn => ((

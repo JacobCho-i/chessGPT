@@ -10,27 +10,6 @@ b = board()
 last_move = {'icon' : '.', 'distance' : 0, 'row' : 0, 'col' : 0}
 response = []
 
-@app.route('/messages')
-def get_data():
-    print("this is response: ")
-    print(response)
-    return jsonify({'data': response})
-
-@app.route('/process_data', methods=['POST'])
-def process_data():
-    data = request.json  # Get JSON data sent by the client
-    # Process data here...
-    print(data)
-    return jsonify({'data': 'Data received successfully!'})
-
-@app.route('/process_champion', methods=['POST'])
-def process_champion():
-    data = request.json  # Get JSON data sent by the client
-    # Process data here...
-    print(data)
-    msg = 'My first move is ' + data['champion'] + '!'
-    return jsonify({'data': msg})
-
 @app.route('/restart_game', methods=['POST'])
 def restart_game():
     global b, last_move, response
@@ -119,16 +98,6 @@ def process_move():
                 result['disabled_white_pieces'][i] = "wq"
     return jsonify({'legal': True, 'result': result['result'], 'board': result['board'], 'prev': [result['previous'][0], result['previous'][1]], 'next': [result['next'][0], result['next'][1]], 'response': result['response'], 
                     'white': result['disabled_white_pieces'], 'black': result['disabled_black_pieces']})
-
-# url = '/message' + str(index)
-@app.route('/message', methods=['POST'])
-def process_msg():
-    data = request.json  # Get JSON data sent by the client
-    # Process data here...
-    print(data)
-    msg = 'My first move is ' + data['champion'] + '!'
-    # index = index + 1
-    return jsonify({'data': msg})
 
 if __name__ == '__main__':
     app.run(debug=True)

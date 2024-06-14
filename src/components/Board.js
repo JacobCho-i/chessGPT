@@ -14,7 +14,7 @@ let board = [
 ];
 */
 
-function Board({ responseState, updateResponseState, updatePopupState, black, white}) {
+function Board({ responseState, updateResponseState, updatePopupState, black, white, refreshKey, setRefresh}) {
     const rows = [8, 7, 6, 5, 4, 3, 2, 1];
     const alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
     const cols = [0, 1, 2, 3, 4, 5, 6, 7];
@@ -36,6 +36,13 @@ function Board({ responseState, updateResponseState, updatePopupState, black, wh
     let [pawnType, setPawnType] = useState('.');
     let [enemy, setEnemy] = useState('b');
     let [legal, setLegal] = useState(false);
+
+    useEffect(() => {
+        if (refreshKey === 1) {
+            window.location.reload();
+            setRefresh(0);
+        }
+      }, [refreshKey]);
 
     function showSpinner() {
         document.getElementById('spinner').style.display = 'block';
@@ -69,7 +76,6 @@ function Board({ responseState, updateResponseState, updatePopupState, black, wh
     }
 
     async function validate(prev, next) {
-        // call back-end to get legit moves
         let moves = []; 
         const legal = await processMove(prev, next);
         console.log(legal)
@@ -103,25 +109,6 @@ function Board({ responseState, updateResponseState, updatePopupState, black, wh
         }
         black(data.black)
         white(data.white)
-        /*
-        let tempmov = board[8-prev.charAt(0)][prev.charAt(1)];
-        let nextPawn = board[8-next.charAt(0)][next.charAt(1)];
-        if (typeof nextPawn === 'string' && nextPawn.length > 0 && nextPawn.substring(0, 1) === enemy) {
-            board[8-next.charAt(0)][next.charAt(1)] = board[8-prev.charAt(0)][prev.charAt(1)];
-            board[8-prev.charAt(0)][prev.charAt(1)] = ".";
-        }
-        else {
-            board[8-prev.charAt(0)][prev.charAt(1)] = board[8-next.charAt(0)][next.charAt(1)];
-            board[8-next.charAt(0)][next.charAt(1)] = tempmov;
-        }
-        const prevmove = data.prev;
-        const nextmove = data.next;
-        console.log(prevmove)
-        console.log(nextmove)
-        let temp = board[7-prevmove[0]][prevmove[1]];
-        board[7-nextmove[0]][nextmove[1]] = temp;
-        board[7-prevmove[0]][prevmove[1]] = ".";
-        */
         setPawn('.');
         setPawnType('.');
         setLoading(false);
