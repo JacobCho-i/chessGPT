@@ -519,7 +519,21 @@ def check_valid(chatgpt, board, begin_coord, end_coord, last_move):
                 elif(board.board[end_coord[0]][end_coord[1]].side == 'B' or board.board[end_coord[0]][end_coord[1]].side == 'b'):
                     board.disabled_black_pieces.append(board.board[end_coord[0]][end_coord[1]].icon)
                 board.remove_piece((move[3][0], move[3][1]))
-            p = pawn(board, move[3][0], move[3][1], 'B')
+            if(move[3][0] != 7):
+                p = pawn(board, move[3][0], move[3][1], 'B')
+            else:
+                match move[3][1]:
+                    case 0 | 7:
+                        p = rook(board, move[3][0], move[3][1], 'B')
+                    case 1 | 6:
+                        p = knight(board, move[3][0], move[3][1], 'B')
+                    case 2 | 5: 
+                        p = bishop(board, move[3][0], move[3][1], 'B')
+                    case 3:
+                        p = queen(board, move[3][0], move[3][1], 'B')
+                    case 4:
+                        p = king(board, move[3][0], move[3][1], 'B')
+
             board.pieces['black_pieces'].append(p)
             board.set_piece((move[3][0], move[3][1]), p)
             #board.board[move[3][0]][move[3][1]].move_piece(move[3][0], move[3][1], last_move)
@@ -534,6 +548,7 @@ def check_valid(chatgpt, board, begin_coord, end_coord, last_move):
             result = "no win"
 
         newboard = copy.deepcopy(board.visual_board)
+        newboard[move[2][0]][move[2][1]] = '!'
         newboard[0], newboard[1], newboard[2], newboard[3], newboard[4], newboard[5], newboard[6], newboard[7] = newboard[7], newboard[6], newboard[5], newboard[4], newboard[3], newboard[2], newboard[1], newboard[0]
         return {"result": result, "previous": move[2], "next": move[3], "response": move[4], "board": newboard, "disabled_white_pieces": board.disabled_white_pieces, "disabled_black_pieces": board.disabled_black_pieces}
 
