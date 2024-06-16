@@ -32,3 +32,15 @@ npm start
 ```
 
 This will open a window where you can play a game of chess against chatGPT.
+
+## Playthrough
+
+<img width="1919" alt="Screenshot 2024-06-16 155009" src="https://github.com/JacobCho-i/chessGPT/assets/112274874/f89e0233-7d38-4fea-85d3-395d11b37853">
+
+<img width="1919" alt="Screenshot 2024-06-16 155158" src="https://github.com/JacobCho-i/chessGPT/assets/112274874/b5bb7489-4bcb-4190-93c8-0b7f95917d9b">
+
+<img width="1919" alt="Screenshot 2024-06-16 155221" src="https://github.com/JacobCho-i/chessGPT/assets/112274874/963fcbc7-b029-4f55-9b98-6ce0f5fb3575">
+
+<img width="1919" alt="Screenshot 2024-06-16 155253" src="https://github.com/JacobCho-i/chessGPT/assets/112274874/4fe17d8c-ab9b-4636-bc55-e87e80e8d9eb">
+
+<img width="1919" alt="Screenshot 2024-06-16 155318" src="https://github.com/JacobCho-i/chessGPT/assets/112274874/b5091a67-a677-4806-a067-1dceb5255e9c">
