@@ -138,29 +138,29 @@ function Board({ responseState, updateResponseState, updatePopupState, black, wh
             case '.':
                 break;
             case 'wp':
-                return <img src="/w_peasant.png"></img>
+                return isprevious ? <img className='opacity-30' src="/w_peasant.png"></img> : <img src="/w_peasant.png"></img>
             case 'wr':
-                return <img src="/w_rook.png"></img>
+                return isprevious ? <img className='opacity-30' src="/w_rook.png"></img> : <img src="/w_rook.png"></img>
             case 'wn':
-                return <img src="/w_knight.png"></img>
+                return isprevious ? <img className='opacity-30' src="/w_knight.png"></img> : <img src="/w_knight.png"></img>
             case 'wb':
-                return <img src="/w_bishop.png"></img>
+                return isprevious ? <img className='opacity-30' src="/w_bishop.png"></img> : <img src="/w_bishop.png"></img>
             case 'wq':
-                return <img src="/w_queen.png"></img>
+                return isprevious ? <img className='opacity-30' src="/w_queen.png"></img> : <img src="/w_queen.png"></img>
             case 'wk':
-                return <img src="/w_king.png"></img>
+                return isprevious ? <img className='opacity-30' src="/w_king.png"></img> : <img src="/w_king.png"></img>
             case 'bp':
                 return isprevious ? <img className='opacity-75' src="/b_peasant.png"></img> : <img src="/b_peasant.png"></img>
             case 'br':
-                return <img src="/b_rook.png"></img>
+                return isprevious ? <img className='opacity-75' src="/b_rook.png"></img> : <img src="/b_rook.png"></img>
             case 'bn':
-                return <img src="/b_knight.png"></img>
+                return isprevious ? <img className='opacity-75' src="/b_knight.png"></img> : <img src="/b_knight.png"></img>
             case 'bb':
-                return <img src="/b_bishop.png"></img>
+                return isprevious ? <img className='opacity-75' src="/b_bishop.png"></img> : <img src="/b_bishop.png"></img>
             case 'bq':
-                return <img src="/b_queen.png"></img>
+                return isprevious ? <img className='opacity-75' src="/b_queen.png"></img> : <img src="/b_queen.png"></img>
             case 'bk':
-                return <img src="/b_king.png"></img>
+                return isprevious ? <img className='opacity-75' src="/b_king.png"></img> : <img src="/b_king.png"></img>
             
         }
     }
