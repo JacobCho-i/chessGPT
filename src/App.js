@@ -164,7 +164,7 @@ import Spinner from './components/Spinner';
           <div className="flex justify-between items-start h-[100px]">
             <div>
             </div>
-            <div className='mx-16 max-h-[300px] overflow-y-auto w-[300px]'>
+            <div className='mx-16 max-h-[800px] overflow-y-auto w-[300px]'>
               <p class='kanit-regular'>Message from ChatGPT: </p>
               <ul class='kanit-small'>
                 {responseState.map((message, index) => (
@@ -175,7 +175,7 @@ import Spinner from './components/Spinner';
           </div>
           <div className="flex justify-center space-x-20">
             <div className='top-0 justify-center'>
-              <div class="kanit-small" className='text-center'>
+              <div className='text-center' class="kanit-small">
                 ChatGPT    
               </div>
               {knockedBlack.map(pawn => ((
@@ -191,7 +191,7 @@ import Spinner from './components/Spinner';
               {isPopupVisible == 2 && <Popup onClose={closePopup} win={false} />}
             </div>
             <div className='top-0'>
-              <div class="kanit-small"  className='text-center'>
+              <div className='text-center' class="kanit-small">
                 You
               </div>
               {knockedWhite.map(pawn => ((

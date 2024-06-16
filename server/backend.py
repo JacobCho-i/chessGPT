@@ -41,6 +41,10 @@ def process_move():
     response.append("my move is " + result['response'])
     for i, sublist in enumerate(result['board']):
         for j, string in enumerate(sublist):
+            previous = False
+            if string[0:1] == '!':
+                previous = True
+                string = string[1:]
             match string:
                 case "p":
                     result['board'][i][j] = "bp"
@@ -66,6 +70,8 @@ def process_move():
                     result['board'][i][j] = "wk"
                 case "Q":
                     result['board'][i][j] = "wq"
+            if previous:
+                result['board'][i][j] += result['board'][i][j][1]
     print(result['board'])
     print(response)
     for i, string in enumerate(result['disabled_black_pieces']):

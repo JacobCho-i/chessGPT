@@ -129,6 +129,11 @@ function Board({ responseState, updateResponseState, updatePopupState, black, wh
     }
 
     function getImage(pawn_id) {
+        var isprevious = false;
+        if (typeof pawn_id === 'string' && pawn_id.length > 2) {
+            isprevious = true;
+            pawn_id = pawn_id.substring(0,2);
+        }
         switch(pawn_id) {
             case '.':
                 break;
@@ -145,7 +150,7 @@ function Board({ responseState, updateResponseState, updatePopupState, black, wh
             case 'wk':
                 return <img src="/w_king.png"></img>
             case 'bp':
-                return <img src="/b_peasant.png"></img>
+                return isprevious ? <img className='opacity-75' src="/b_peasant.png"></img> : <img src="/b_peasant.png"></img>
             case 'br':
                 return <img src="/b_rook.png"></img>
             case 'bn':
@@ -156,6 +161,7 @@ function Board({ responseState, updateResponseState, updatePopupState, black, wh
                 return <img src="/b_queen.png"></img>
             case 'bk':
                 return <img src="/b_king.png"></img>
+            
         }
     }
 
